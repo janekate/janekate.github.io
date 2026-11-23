@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adrienne's Bazi Chart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@400;500&family=Noto+Serif+SC:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a deck of pearl-foil cards laid on a night sea. Pillars are tarot cards, readings are arched talismans, the luck cycles trace an arc like a moon calendar. Single-theme by design. */
+:root{
+  --ink:#061113;
+  --card:#0b191b;
+  --gold:#c5d3cf;
+  --gold-hi:#eef4f1;
+  --gold-dim:#5d7672;
+  --rule:rgba(197,211,207,.42);
+  --cream:#e3e9e6;
+  --mist:#94a8a4;
+  --display:"Cormorant Garamond", Garamond, "Times New Roman", serif;
+  --body:"EB Garamond", Garamond, Georgia, serif;
+  --label:"Jost", "Futura", "Avenir Next", "Helvetica Neue", sans-serif;
+  --han:"Noto Serif SC", "Songti SC", "STSong", serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--ink)}
+body{margin:0;background:var(--ink);color:var(--cream);font-family:var(--body);font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;position:relative}
+#dust{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.page{position:relative;z-index:1}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0 0 1em}
+em{font-style:italic;color:var(--gold-hi)}
+.han{font-family:var(--han)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+.prose{max-width:640px}
+.cap{font-family:var(--label);font-size:11.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
+.ln{fill:none;stroke:var(--gold);stroke-width:1;stroke-linecap:round;stroke-linejoin:round}
+.lnf{fill:var(--gold)}
+
+/* HERO */
+.hero{padding:72px 0 40px;text-align:center}
+.hero .num{font-family:var(--display);font-size:20px;color:var(--gold);letter-spacing:.2em}
+.hero-art{width:min(420px,88vw);height:auto;display:block;margin:10px auto 0}
+.hero h1{font-size:clamp(52px,8vw,92px);font-style:italic;color:var(--gold-hi);margin-top:6px}
+.hero .sub{font-family:var(--display);font-size:clamp(20px,2.5vw,26px);font-style:italic;color:var(--mist);margin:8px auto 0;max-width:560px}
+.hero .meta{margin-top:28px;display:flex;justify-content:center;gap:28px;flex-wrap:wrap}
+.hero .meta div{font-family:var(--label);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.hero .meta div span{display:block;font-family:var(--body);letter-spacing:.02em;text-transform:none;font-size:16px;color:var(--cream);margin-top:4px}
+.hero .dedic{margin-top:26px;font-style:italic;color:var(--mist);font-size:17px}
+
+/* SECTIONS */
+section{padding:84px 0}
+.divider{display:block;margin:0 auto;width:220px;height:24px}
+.sec-head{text-align:center;margin-bottom:40px}
+.sec-head .han{display:block;font-size:15px;letter-spacing:.5em;color:var(--gold);margin-bottom:12px;padding-left:.5em}
+.sec-head h2{font-size:clamp(36px,5vw,56px);font-style:italic;color:var(--gold-hi)}
+.sec-head p{margin:16px auto 0;max-width:620px;color:var(--cream)}
+
+/* TAROT CARDS */
+.deck{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.tarot{position:relative;background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:34px 16px 0;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:560px}
+.tarot::before{content:"";position:absolute;inset:7px;border:1px solid rgba(197,211,207,.22);border-radius:6px;pointer-events:none}
+.tarot .tab{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--ink);border:1px solid var(--rule);border-top:none;border-radius:0 0 12px 12px;padding:3px 14px 4px;font-family:var(--display);font-size:15px;color:var(--gold);letter-spacing:.12em}
+.tarot.dm{border-color:var(--gold)}
+.tarot.dm .tab{border-color:var(--gold);color:var(--gold-hi)}
+.tarot .role{font-family:var(--label);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--mist);margin-top:4px}
+.tarot .god{font-family:var(--display);font-style:italic;font-size:19px;color:var(--gold-hi);margin-top:6px}
+.tarot .god .han{font-style:normal;font-size:13px;color:var(--mist);margin-left:4px}
+.tarot .emb{width:110px;height:110px;margin:12px 0 2px}
+.tarot .gly{font-family:var(--han);font-weight:900;font-size:58px;line-height:1;color:var(--gold-hi)}
+.tarot .gly.b{margin-top:14px;font-weight:600;color:var(--gold)}
+.tarot .el{font-family:var(--label);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-top:6px}
+.tarot .hid{margin-top:14px;font-size:14.5px;color:var(--mist);line-height:1.5}
+.tarot .hid .han{color:var(--gold);margin-right:4px}
+.tarot .foot{margin-top:auto;width:calc(100% + 32px);border-top:1px solid var(--rule);padding:12px 8px 14px;font-family:var(--label);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+.tarot .foot i{display:block;font-family:var(--display);font-style:italic;text-transform:none;letter-spacing:.02em;font-size:15px;color:var(--mist);margin-top:3px}
+.stars-note{text-align:center;margin:36px auto 0;max-width:680px;color:var(--mist);font-style:italic}
+
+/* DAY MASTER */
+.dm-grid{display:grid;grid-template-columns:340px 1fr;gap:64px;align-items:center}
+.pill{position:relative;border:1px solid var(--rule);border-radius:999px;background:var(--card);display:flex;flex-direction:column;align-items:center;text-align:center}
+.pill-big{padding:56px 30px 60px}
+.pill-big svg{width:100%;height:auto}
+.lede{font-family:var(--display);font-style:italic;font-size:clamp(23px,2.6vw,28px);line-height:1.42;color:var(--gold-hi);margin-bottom:24px}
+
+/* ELEMENTS */
+.el-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+#orbit{width:100%;max-width:470px;height:auto;display:block;margin:0 auto}
+.bars{display:grid;gap:18px;margin-top:8px}
+.bar{display:grid;grid-template-columns:110px 1fr 44px;gap:14px;align-items:center}
+.bar .nm{font-family:var(--label);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.bar .nm .han{letter-spacing:0;margin-left:6px;color:var(--mist)}
+.bar .tr{position:relative;height:9px}
+.bar .tr::before{content:"";position:absolute;left:0;right:0;top:4px;border-top:1px dotted var(--gold-dim)}
+.bar .fi{position:absolute;left:0;top:3px;height:3px;background:var(--gold);border-radius:2px}
+.bar .fi::after{content:"";position:absolute;right:-4px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--gold-hi)}
+.bar .v{font-family:var(--label);font-size:13px;color:var(--cream);text-align:right;font-variant-numeric:tabular-nums}
+.small{font-size:15.5px;color:var(--mist);margin-top:18px}
+.roles{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.role-chip{border:1px solid var(--rule);border-radius:999px;padding:5px 14px;font-family:var(--label);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mist)}
+.role-chip b{font-weight:500;color:var(--gold-hi)}
+.role-chip.fav{border-color:var(--gold);background:rgba(197,211,207,.08)}
+
+/* TALISMANS */
+.talismans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.tal{padding:44px 30px 46px;border-radius:200px;justify-content:flex-start}
+.tal svg{width:120px;height:120px;margin-bottom:10px}
+.tal .k{font-family:var(--han);font-size:14px;letter-spacing:.3em;color:var(--mist);margin-bottom:6px;padding-left:.3em}
+.tal h3{font-size:30px;font-style:italic;color:var(--gold-hi);margin-bottom:14px}
+.tal p{font-size:17px;text-align:left}
+.tal .src{margin-top:auto;padding-top:10px;font-family:var(--label);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-dim)}
+.long{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+.long .tarot{min-height:0;padding:40px 36px 0;text-align:left;align-items:stretch}
+.long .tarot h3{font-size:30px;font-style:italic;color:var(--gold-hi);text-align:center;margin-bottom:6px}
+.long .tarot .k{font-family:var(--han);text-align:center;letter-spacing:.3em;color:var(--mist);font-size:14px;margin-bottom:16px}
+.long .tarot p{font-size:17px}
+.long .tarot .foot{width:calc(100% + 72px);margin-left:-36px;text-align:center}
+
+/* LUCK ARC */
+.arc-box{overflow-x:auto}
+#arc{display:block;width:100%;min-width:640px;height:auto}
+.luck-read{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:20px}
+.luck-read h3{font-size:30px;font-style:italic;color:var(--gold-hi);margin-bottom:10px}
+.luck-read h3 .han{font-style:normal;font-size:22px;color:var(--gold);margin-left:6px}
+
+/* YEARS */
+.years{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.years .tarot{min-height:0;padding-bottom:0}
+.years .yr{font-family:var(--display);font-size:44px;color:var(--gold-hi);line-height:1;margin-top:8px}
+.years .yg{font-family:var(--han);font-size:22px;color:var(--gold);margin-top:6px;letter-spacing:.2em;padding-left:.2em}
+.years .emb{width:90px;height:90px;margin:10px 0}
+.years p{font-size:16.5px;text-align:left;padding:0 10px}
+
+/* RITUALS */
+.rituals{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.rit{padding:40px 22px 44px;border-radius:200px}
+.rit svg{width:96px;height:96px;margin-bottom:8px}
+.rit h3{font-family:var(--label);font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.rit p{font-size:16.5px;margin:0}
+.sw{display:flex;gap:8px;justify-content:center;margin:4px 0 14px}
+.sw span{width:22px;height:22px;border-radius:50%;border:1px solid var(--rule)}
+
+/* VERSE */
+.verse{text-align:center;padding:72px 0 40px}
+.verse .zh{font-family:var(--han);font-size:clamp(18px,2.3vw,23px);line-height:2.1;color:var(--gold-hi);letter-spacing:.12em}
+.verse .en{font-family:var(--display);font-style:italic;font-size:clamp(21px,2.4vw,26px);color:var(--cream);margin-top:14px}
+footer{padding:28px 0 72px;text-align:center;color:var(--mist);font-size:14.5px}
+footer p{max-width:640px;margin:0 auto .6em}
+
+a:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+
+@media (max-width:960px){
+  .deck{grid-template-columns:repeat(2,1fr)}
+  .talismans{grid-template-columns:1fr 1fr}
+  .rituals{grid-template-columns:repeat(2,1fr)}
+  .dm-grid,.el-grid,.luck-read,.long{grid-template-columns:1fr}
+  .dm-grid .pill-big{max-width:340px;margin:0 auto}
+  .years{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  body{font-size:18px}
+  .wrap{padding:0 18px}
+  section{padding:60px 0}
+  .deck{grid-template-columns:1fr 1fr;gap:12px}
+  .tarot{min-height:500px;padding-left:10px;padding-right:10px}
+  .tarot .foot{width:calc(100% + 20px)}
+  .tarot .gly{font-size:46px}
+  .tarot .emb{width:84px;height:84px}
+  .talismans,.rituals{grid-template-columns:1fr}
+  .tal{border-radius:160px}
+  .bar{grid-template-columns:96px 1fr 40px}
+}
+
+/* ABUNDANCE */
+.ab-intro{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;margin-bottom:56px}
+.ab-intro .lede{margin-bottom:0}
+.channels{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:64px}
+.ledger{border-top:1px solid var(--rule)}
+.lrow{display:grid;grid-template-columns:90px 70px 128px 1fr;gap:22px;align-items:baseline;padding:22px 4px;border-bottom:1px solid var(--rule)}
+.lrow .y{font-family:var(--display);font-size:32px;color:var(--gold-hi);line-height:1;font-variant-numeric:tabular-nums}
+.lrow .g{font-family:var(--han);font-size:20px;color:var(--gold);letter-spacing:.15em}
+.lrow .moons{display:flex;gap:6px;align-items:center}
+.lrow .moons i{width:14px;height:14px;border-radius:50%;border:1px solid var(--gold);display:block}
+.lrow .moons i.f{background:var(--gold)}
+.lrow .t b{display:block;font-family:var(--label);font-weight:400;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.lrow .t p{margin:0;font-size:17px}
+.lrow.peak{background:linear-gradient(90deg,rgba(197,211,207,.07),transparent)}
+.ledger-key{display:flex;gap:18px;justify-content:flex-end;margin-top:14px;font-family:var(--label);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mist)}
+.ab-keys{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:64px}
+.ab-keys .tarot{min-height:0;padding:40px 36px 0;text-align:left;align-items:stretch}
+.ab-keys .tarot h3{font-size:28px;font-style:italic;color:var(--gold-hi);text-align:center;margin-bottom:16px}
+.ab-keys .tarot ul{margin:0 0 22px;padding-left:18px;font-size:17px}
+.ab-keys .tarot li{margin-bottom:8px}
+.ab-keys .tarot li::marker{color:var(--gold)}
+.ab-keys .tarot .foot{width:calc(100% + 72px);margin-left:-36px;text-align:center}
+@media (max-width:960px){.ab-intro,.ab-keys{grid-template-columns:1fr}.channels{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.channels{grid-template-columns:1fr}.lrow{grid-template-columns:1fr 1fr;gap:8px 14px}.lrow .t{grid-column:1/-1}}
+
+/* 2027 MONTHS */
+.months{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.months .tarot{min-height:0;padding:34px 18px 0;align-items:stretch;text-align:left}
+.mhead{display:flex;justify-content:space-between;align-items:baseline}
+.mname{font-family:var(--display);font-size:26px;font-style:italic;color:var(--gold-hi);line-height:1}
+.mgz{font-family:var(--han);font-size:19px;color:var(--gold);letter-spacing:.1em}
+.mdates{font-family:var(--label);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mist);margin:6px 0 10px}
+.months .moons{display:flex;gap:5px;margin-bottom:10px}
+.months .moons i{width:11px;height:11px;border-radius:50%;border:1px solid var(--gold);display:block}
+.months .moons i.f{background:var(--gold)}
+.mtheme{font-family:var(--display);font-size:20px;color:var(--cream);margin-bottom:6px;line-height:1.2}
+.months p{font-size:15.5px;line-height:1.55;margin:0 0 14px}
+.months .tarot.peak{border-color:var(--gold)}
+.months .foot{width:calc(100% + 36px);margin-left:-18px;text-align:center;font-size:10px;letter-spacing:.18em;padding:10px 8px 12px}
+/* NATAL */
+.natal-top{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;margin-bottom:56px}
+#wheel{width:100%;max-width:520px;height:auto;display:block;margin:0 auto}
+.big3{display:grid;gap:16px}
+.big3 .tarot{min-height:0;padding:24px 26px 18px;align-items:stretch;text-align:left}
+.big3 .b3h{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+.big3 .gl{font-size:24px;color:var(--gold);font-family:"DejaVu Sans","Segoe UI Symbol","Apple Symbols",serif;width:28px}
+.big3 h3{font-size:26px;font-style:italic;color:var(--gold-hi)}
+.big3 .deg{margin-left:auto;font-family:var(--label);font-size:11px;letter-spacing:.2em;color:var(--mist)}
+.big3 p{font-size:16.5px;margin:0}
+.ptable{width:100%;border-collapse:collapse;margin-top:48px;font-variant-numeric:tabular-nums}
+.ptable th{font-family:var(--label);font-weight:400;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);text-align:left;padding:10px 12px;border-bottom:1px solid var(--rule)}
+.ptable td{padding:10px 12px;border-bottom:1px solid rgba(197,211,207,.18);font-size:16.5px}
+.ptable td.g{font-family:"DejaVu Sans","Segoe UI Symbol","Apple Symbols",serif;color:var(--gold);width:40px}
+.ptable td.m{color:var(--mist);font-style:italic}
+.ptable-box{overflow-x:auto}
+@media (max-width:960px){.months{grid-template-columns:repeat(2,1fr)}.natal-top{grid-template-columns:1fr}}
+@media (max-width:560px){.months{grid-template-columns:1fr}}
+
+/* ROAD */
+.eras{display:grid;gap:18px}
+.eras .tarot.era{min-height:0;display:grid;grid-template-columns:230px 1fr;gap:36px;align-items:start;text-align:left;padding:40px 36px 30px}
+.eras .tarot.era.now{border-color:var(--gold)}
+.era-l{text-align:center;border-right:1px solid var(--rule);padding-right:28px}
+.era-l .age{font-family:var(--label);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.era-l .yrs{font-family:var(--display);font-size:24px;color:var(--gold-hi);margin-top:6px;font-variant-numeric:tabular-nums}
+.era-l .lg{font-family:var(--han);font-weight:900;font-size:54px;color:var(--gold-hi);line-height:1.1;margin:14px 0 8px}
+.era-l .ttl{font-family:var(--display);font-style:italic;font-size:21px;color:var(--cream);line-height:1.25}
+.era-r p{font-size:17px}
+.ky{list-style:none;margin:6px 0 0;padding:14px 0 0;border-top:1px dashed var(--rule);display:grid;gap:8px}
+.ky li{font-size:15.5px;line-height:1.5;color:var(--cream)}
+.ky b{font-family:var(--label);font-weight:400;font-size:11.5px;letter-spacing:.18em;color:var(--gold);margin-right:10px;white-space:nowrap}
+@media (max-width:760px){.eras .tarot.era{grid-template-columns:1fr;gap:18px;padding:36px 24px 24px}.era-l{border-right:none;border-bottom:1px solid var(--rule);padding:0 0 18px}}
+/* FRIENDSHIP */
+.duo{display:grid;grid-template-columns:1fr auto 1fr;gap:28px;align-items:center;margin-bottom:56px}
+.duo .who{text-align:center}
+.duo .who .nm{font-family:var(--display);font-style:italic;font-size:40px;color:var(--gold-hi);line-height:1}
+.duo .who .dm{font-family:var(--han);font-weight:900;font-size:64px;color:var(--gold-hi);line-height:1.1;margin:10px 0 2px}
+.duo .who .cap{display:block}
+.duo .who .row{display:flex;justify-content:center;gap:10px;margin-top:14px;font-family:var(--han);font-size:19px;color:var(--gold);letter-spacing:.05em}
+.duo .who .row span{display:flex;flex-direction:column;align-items:center;gap:2px}
+.duo .who .row small{font-family:var(--label);font-size:9px;letter-spacing:.2em;color:var(--mist);text-transform:uppercase}
+.forge{width:200px;height:auto}
+.fs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.fs-grid .tarot{min-height:0;padding:40px 34px 0;text-align:left;align-items:stretch}
+.fs-grid .tarot h3{font-size:28px;font-style:italic;color:var(--gold-hi);text-align:center;margin-bottom:6px}
+.fs-grid .tarot .k{font-family:var(--han);text-align:center;letter-spacing:.3em;color:var(--mist);font-size:14px;margin-bottom:16px}
+.fs-grid .tarot p{font-size:17px}
+.fs-grid .tarot .foot{width:calc(100% + 68px);margin-left:-34px;text-align:center}
+.fs-grid .wide{grid-column:1/-1}
+.fs-grid .wide p{max-width:820px;margin-left:auto;margin-right:auto}
+@media (max-width:960px){.duo{grid-template-columns:1fr}.forge{margin:0 auto;display:block}.fs-grid{grid-template-columns:1fr}}
+
+/* DECADE */
+.phases{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.phases .tarot{min-height:0;padding:34px 16px 0}
+.phases .yr{font-family:var(--display);font-size:32px;color:var(--gold-hi);line-height:1;margin-top:6px}
+.phases .ph{font-family:var(--display);font-style:italic;font-size:19px;color:var(--cream);margin-top:6px}
+.phases .emb{width:72px;height:72px;margin:10px 0}
+.phases p{font-size:15.5px;text-align:left;line-height:1.5}
+.phases .foot{width:calc(100% + 32px)}
+.phases .tarot.peak{border-color:var(--gold)}
+@media (max-width:960px){.phases{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.phases{grid-template-columns:1fr}}
+
+/* ===== ILLUSTRATED LAYER: modern and ancient at once ===== */
+:root{--sun1:#ecd9e4;--sun2:#5fa3a0;--seal:#a8243c;--paper:#e8eeeb}
+body{background:radial-gradient(1200px 800px at 50% -10%, #0f2a2c 0%, #071315 55%, #050e10 100%) fixed}
+.grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+section{position:relative}
+section::before{content:"";position:absolute;width:560px;height:560px;border-radius:50%;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle, rgba(95,163,160,.16) 0%, rgba(236,217,228,.06) 42%, transparent 68%);top:30px;left:-220px}
+section:nth-of-type(even)::before{left:auto;right:-220px;top:120px;background:radial-gradient(circle, rgba(197,211,207,.12) 0%, rgba(95,163,160,.05) 45%, transparent 68%)}
+main{overflow-x:clip}
+.sec-head::before{content:"";display:block;width:54px;height:54px;margin:0 auto 16px;border-radius:50%;
+  background:linear-gradient(180deg,var(--sun1) 0%,var(--sun2) 52%,rgba(95,163,160,.35) 78%,rgba(95,163,160,0) 100%);box-shadow:0 0 40px rgba(95,163,160,.25)}
+.dm-grid .sec-head::before{margin-left:0}
+.sec-head h2{background:linear-gradient(180deg,#ffffff 0%,#eef4f1 45%,#9fb7b2 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* cards: warm gradient fill + gradient hairline */
+.tarot,.pill{border:1px solid transparent;
+  background:linear-gradient(180deg,#0d1f21 0%,#0a181a 60%,#081517 100%) padding-box,
+             linear-gradient(160deg,rgba(238,244,241,.75),rgba(93,118,114,.25) 45%,rgba(95,163,160,.55)) border-box}
+.tarot.dm,.months .tarot.peak,.phases .tarot.peak,.eras .tarot.era.now,.lrow.peak{box-shadow:0 0 0 1px rgba(236,217,228,.35),0 20px 60px -30px rgba(95,163,160,.45)}
+.tarot::before{border-color:rgba(197,211,207,.16)}
+.tarot .tab{background:linear-gradient(180deg,#0f2224,#071315)}
+.pill::after{content:"";position:absolute;left:50%;top:-1px;transform:translateX(-50%);width:42%;height:1px;background:linear-gradient(90deg,transparent,var(--sun1),transparent);opacity:.8}
+.lrow.peak{background:linear-gradient(90deg,rgba(95,163,160,.12),rgba(236,217,228,.04) 40%,transparent)}
+.bar .fi{background:linear-gradient(90deg,var(--sun2),var(--sun1),#eef4f1)}
+/* hero */
+.hero{position:relative;padding-top:56px}
+.hero-art{width:min(560px,94vw)}
+.hero h1{display:inline-flex;align-items:center;gap:22px;background:linear-gradient(180deg,#ffffff,#d7e3df 60%,#8fb1ac);-webkit-background-clip:text;background-clip:text;color:transparent}
+.seal{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:62px;height:76px;border-radius:6px;
+  background:radial-gradient(circle at 30% 25%,#c8445a,var(--seal) 55%,#6e1426);color:#fbf1f3;font-family:var(--han);font-weight:900;font-size:24px;line-height:1.05;
+  box-shadow:inset 0 0 0 2px rgba(251,241,243,.55),inset 0 0 0 5px var(--seal),0 6px 22px rgba(168,36,60,.35);-webkit-text-fill-color:#fbf1f3;transform:rotate(-3deg);font-style:normal}
+.vcol{position:absolute;top:120px;writing-mode:vertical-rl;font-family:var(--han);color:var(--gold);letter-spacing:.35em;font-size:15px;line-height:2}
+.vcol.l{left:max(24px,calc(50% - 470px))}
+.vcol.r{right:max(24px,calc(50% - 470px));font-family:var(--display);font-style:italic;letter-spacing:.06em;font-size:15px;color:var(--mist)}
+.vcol .rule{display:inline-block;width:1px;height:60px;background:linear-gradient(var(--gold),transparent);margin:10px 0}
+@media (max-width:760px){.vcol{display:none}.seal{width:48px;height:60px;font-size:19px}}
+/* divider */
+.divider{width:260px;height:44px}
+.deco{position:absolute;width:230px;height:115px;pointer-events:none;z-index:-1;opacity:.9;top:64px}
+.deco.l{left:max(-40px,calc(50% - 700px))}.deco.r{right:max(-40px,calc(50% - 700px));transform:scaleX(-1)}
+@media (max-width:1000px){.deco{display:none}}
+</style>
+</head>
+<body>
+<canvas id="dust" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="page">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="sunG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbf7f2"/><stop offset=".26" stop-color="#efe3ea"/><stop offset=".46" stop-color="#cfd9db"/><stop offset=".64" stop-color="#8dbdba" stop-opacity=".85"/><stop offset=".82" stop-color="#3f7f7d" stop-opacity=".45"/><stop offset="1" stop-color="#0a2426" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="sunR" cx=".42" cy=".36" r=".64">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#d9c6d6"/><stop offset="1" stop-color="#4f8f8c"/>
+    </radialGradient>
+    <linearGradient id="goldG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6faf8"/><stop offset=".5" stop-color="#c5d3cf"/><stop offset="1" stop-color="#7f9d99"/>
+    </linearGradient>
+    <linearGradient id="tideG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9fd0cf" stop-opacity="0"/><stop offset=".5" stop-color="#bfe3e1"/><stop offset="1" stop-color="#eef4f1"/>
+    </linearGradient>
+    <linearGradient id="jewelG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".42"/><stop offset=".45" stop-color="#a9d6d3" stop-opacity=".18"/><stop offset="1" stop-color="#d9b8cc" stop-opacity=".32"/>
+    </linearGradient>
+    <symbol id="cloud" viewBox="0 0 200 100">
+      <g fill="none" stroke="url(#goldG)" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke-width="1.3" d="M8 74C34 74 48 54 68 54C86 54 92 68 82 74C74 79 66 71 71 66C76 61 84 64 82 69"/>
+        <path stroke-width="1.3" d="M68 54C72 32 98 22 118 32C138 42 134 66 117 66C104 66 103 51 113 49C121 48 123 57 117 59"/>
+        <path stroke-width="1.1" d="M118 32C136 20 166 24 177 41C186 56 172 67 161 61C152 56 157 46 165 49"/>
+        <path stroke-width="1" d="M82 74C110 82 152 80 196 71" opacity=".8"/>
+      </g>
+    </symbol>
+    <symbol id="gem" viewBox="-60 -50 120 110">
+      <path d="M-24-34H24L56-14L0 54L-56-14Z" fill="url(#jewelG)"/>
+      <g fill="none" stroke="#f4f8f6" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M-24-34H24L56-14L0 54L-56-14Z" stroke-width=".9"/>
+        <path d="M-56-14H56" stroke-width=".7"/>
+        <path d="M-56-14L-24-34L-28-14L-8-34L0-14L8-34L28-14L24-34L56-14" stroke-width=".55" opacity=".85"/>
+        <path d="M-28-14L0 54L28-14M0-14V54" stroke-width=".5" opacity=".7"/>
+        <path d="M-42-14L-8 40M42-14L8 40M-14-14L-3 46M14-14L3 46" stroke-width=".35" opacity=".45"/>
+      </g>
+      <path d="M-15-29l5 9M-19-22l2 3" stroke="#ffffff" stroke-width="1" stroke-linecap="round" opacity=".75"/>
+    </symbol>
+    <symbol id="osman" viewBox="0 0 300 200"><g fill="none" stroke="url(#goldG)" stroke-linecap="round"><path stroke-width="2.2" d="M2 196C40 170 82 150 128 128C170 108 214 86 262 52"/><path stroke-width="1.3" d="M128 128C142 104 150 84 152 58"/><path stroke-width="1.1" d="M206 94C224 92 248 98 272 112"/><path stroke-width="1" d="M70 158C78 140 80 124 78 104"/></g><g fill="rgba(197,211,207,.06)" stroke="url(#goldG)" stroke-width=".8"><path d="M40.0 174.0C27.2 175.8 14.7 166.8 10.6 157.0C21.1 155.7 35.2 162.0 40.0 174.0Z"/><path d="M40.0 174.0L12.9 158.4" opacity=".6"/><path d="M70.0 158.0C60.1 152.3 56.4 139.2 58.8 130.2C66.8 135.0 73.1 147.0 70.0 158.0Z"/><path d="M70.0 158.0L59.7 132.4" opacity=".6"/><path d="M96.0 145.0C100.8 133.0 114.9 126.7 125.4 128.0C121.3 137.8 108.8 146.8 96.0 145.0Z"/><path d="M96.0 145.0L123.1 129.4" opacity=".6"/><path d="M128.0 128.0C116.6 127.6 107.2 117.8 105.0 108.7C114.4 109.2 125.6 116.9 128.0 128.0Z"/><path d="M128.0 128.0L106.9 110.3" opacity=".6"/><path d="M140.0 110.0C146.1 100.3 159.2 97.0 168.2 99.7C163.1 107.6 150.9 113.5 140.0 110.0Z"/><path d="M140.0 110.0L165.9 100.6" opacity=".6"/><path d="M152.0 60.0C147.5 50.7 150.9 38.5 156.9 32.4C160.4 40.2 159.4 52.8 152.0 60.0Z"/><path d="M152.0 60.0L156.5 34.6" opacity=".6"/><path d="M150.0 82.0C140.6 85.0 130.0 79.8 125.6 73.1C133.3 70.8 144.7 73.7 150.0 82.0Z"/><path d="M150.0 82.0L127.5 73.8" opacity=".6"/><path d="M180.0 110.0C179.3 97.1 189.4 85.4 199.5 82.1C199.9 92.8 192.4 106.2 180.0 110.0Z"/><path d="M180.0 110.0L197.9 84.4" opacity=".6"/><path d="M206.0 94.0C217.4 94.4 226.8 104.2 229.0 113.3C219.6 112.8 208.4 105.1 206.0 94.0Z"/><path d="M206.0 94.0L227.1 111.7" opacity=".6"/><path d="M240.0 98.0C250.1 92.7 263.1 96.4 269.5 103.2C261.2 107.4 247.6 106.5 240.0 98.0Z"/><path d="M240.0 98.0L267.2 102.8" opacity=".6"/><path d="M262.0 52.0C266.3 41.4 278.7 35.9 288.0 37.0C284.3 45.6 273.3 53.6 262.0 52.0Z"/><path d="M262.0 52.0L285.9 38.2" opacity=".6"/><path d="M230.0 74.0C220.6 69.7 215.3 58.2 216.0 49.8C223.7 53.4 231.0 63.7 230.0 74.0Z"/><path d="M230.0 74.0L217.1 51.7" opacity=".6"/><path d="M272.0 112.0C280.7 111.3 289.6 117.5 292.8 124.0C285.6 124.5 275.7 119.9 272.0 112.0Z"/><path d="M272.0 112.0L291.1 123.0" opacity=".6"/><path d="M78.0 104.0C70.7 97.4 69.9 85.6 73.5 78.4C79.3 84.0 82.6 95.3 78.0 104.0Z"/><path d="M78.0 104.0L73.8 80.4" opacity=".6"/></g><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="94.1" cy="155.5" rx="1.9" ry="1.5" transform="rotate(45 94.1 155.5)"/><ellipse cx="90.3" cy="155.5" rx="1.9" ry="1.5" transform="rotate(135 90.3 155.5)"/><ellipse cx="90.3" cy="151.7" rx="1.9" ry="1.5" transform="rotate(225 90.3 151.7)"/><ellipse cx="94.1" cy="151.7" rx="1.9" ry="1.5" transform="rotate(315 94.1 151.7)"/></g><circle cx="92.19959332745087" cy="153.61136164116422" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="83.6" cy="152.1" rx="1.9" ry="1.5" transform="rotate(45 83.6 152.1)"/><ellipse cx="79.7" cy="152.1" rx="1.9" ry="1.5" transform="rotate(135 79.7 152.1)"/><ellipse cx="79.7" cy="148.2" rx="1.9" ry="1.5" transform="rotate(225 79.7 148.2)"/><ellipse cx="83.6" cy="148.2" rx="1.9" ry="1.5" transform="rotate(315 83.6 148.2)"/></g><circle cx="81.66050150527334" cy="150.1578460991605" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="93.1" cy="149.2" rx="1.9" ry="1.5" transform="rotate(45 93.1 149.2)"/><ellipse cx="89.2" cy="149.2" rx="1.9" ry="1.5" transform="rotate(135 89.2 149.2)"/><ellipse cx="89.2" cy="145.3" rx="1.9" ry="1.5" transform="rotate(225 89.2 145.3)"/><ellipse cx="93.1" cy="145.3" rx="1.9" ry="1.5" transform="rotate(315 93.1 145.3)"/></g><circle cx="91.1083746026259" cy="147.24637816510497" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="89.5" cy="157.7" rx="1.9" ry="1.6" transform="rotate(45 89.5 157.7)"/><ellipse cx="85.5" cy="157.7" rx="1.9" ry="1.6" transform="rotate(135 85.5 157.7)"/><ellipse cx="85.5" cy="153.7" rx="1.9" ry="1.6" transform="rotate(225 85.5 153.7)"/><ellipse cx="89.5" cy="153.7" rx="1.9" ry="1.6" transform="rotate(315 89.5 153.7)"/></g><circle cx="87.50087671019057" cy="155.71358039273468" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="125.6" cy="129.0" rx="2.1" ry="1.7" transform="rotate(45 125.6 129.0)"/><ellipse cx="121.3" cy="129.0" rx="2.1" ry="1.7" transform="rotate(135 121.3 129.0)"/><ellipse cx="121.3" cy="124.7" rx="2.1" ry="1.7" transform="rotate(225 121.3 124.7)"/><ellipse cx="125.6" cy="124.7" rx="2.1" ry="1.7" transform="rotate(315 125.6 124.7)"/></g><circle cx="123.41855639402323" cy="126.86407231712126" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="127.5" cy="123.9" rx="1.9" ry="1.5" transform="rotate(45 127.5 123.9)"/><ellipse cx="123.7" cy="123.9" rx="1.9" ry="1.5" transform="rotate(135 123.7 123.9)"/><ellipse cx="123.7" cy="120.0" rx="1.9" ry="1.5" transform="rotate(225 123.7 120.0)"/><ellipse cx="127.5" cy="120.0" rx="1.9" ry="1.5" transform="rotate(315 127.5 120.0)"/></g><circle cx="125.59124246330958" cy="121.93609121928718" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="134.4" cy="127.8" rx="1.7" ry="1.3" transform="rotate(45 134.4 127.8)"/><ellipse cx="131.0" cy="127.8" rx="1.7" ry="1.3" transform="rotate(135 131.0 127.8)"/><ellipse cx="131.0" cy="124.3" rx="1.7" ry="1.3" transform="rotate(225 131.0 124.3)"/><ellipse cx="134.4" cy="124.3" rx="1.7" ry="1.3" transform="rotate(315 134.4 124.3)"/></g><circle cx="132.72867350900972" cy="126.04212691589719" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="123.4" cy="128.6" rx="1.9" ry="1.5" transform="rotate(45 123.4 128.6)"/><ellipse cx="119.6" cy="128.6" rx="1.9" ry="1.5" transform="rotate(135 119.6 128.6)"/><ellipse cx="119.6" cy="124.8" rx="1.9" ry="1.5" transform="rotate(225 119.6 124.8)"/><ellipse cx="123.4" cy="124.8" rx="1.9" ry="1.5" transform="rotate(315 123.4 124.8)"/></g><circle cx="121.51025457739611" cy="126.70071145487817" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="136.7" cy="117.0" rx="1.9" ry="1.5" transform="rotate(45 136.7 117.0)"/><ellipse cx="132.8" cy="117.0" rx="1.9" ry="1.5" transform="rotate(135 132.8 117.0)"/><ellipse cx="132.8" cy="113.1" rx="1.9" ry="1.5" transform="rotate(225 132.8 113.1)"/><ellipse cx="136.7" cy="113.1" rx="1.9" ry="1.5" transform="rotate(315 136.7 113.1)"/></g><circle cx="134.72104148424296" cy="115.02948474691556" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="155.9" cy="100.0" rx="1.6" ry="1.3" transform="rotate(45 155.9 100.0)"/><ellipse cx="152.5" cy="100.0" rx="1.6" ry="1.3" transform="rotate(135 152.5 100.0)"/><ellipse cx="152.5" cy="96.6" rx="1.6" ry="1.3" transform="rotate(225 152.5 96.6)"/><ellipse cx="155.9" cy="96.6" rx="1.6" ry="1.3" transform="rotate(315 155.9 96.6)"/></g><circle cx="154.2086168940065" cy="98.2695848188309" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="140.7" cy="98.8" rx="2.1" ry="1.7" transform="rotate(45 140.7 98.8)"/><ellipse cx="136.4" cy="98.8" rx="2.1" ry="1.7" transform="rotate(135 136.4 98.8)"/><ellipse cx="136.4" cy="94.6" rx="2.1" ry="1.7" transform="rotate(225 136.4 94.6)"/><ellipse cx="140.7" cy="94.6" rx="2.1" ry="1.7" transform="rotate(315 140.7 94.6)"/></g><circle cx="138.5276959128606" cy="96.69698429381229" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="151.1" cy="91.4" rx="2.0" ry="1.6" transform="rotate(45 151.1 91.4)"/><ellipse cx="147.0" cy="91.4" rx="2.0" ry="1.6" transform="rotate(135 147.0 91.4)"/><ellipse cx="147.0" cy="87.3" rx="2.0" ry="1.6" transform="rotate(225 147.0 87.3)"/><ellipse cx="151.1" cy="87.3" rx="2.0" ry="1.6" transform="rotate(315 151.1 87.3)"/></g><circle cx="149.05514722592397" cy="89.31391040624801" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="193.2" cy="102.5" rx="1.8" ry="1.5" transform="rotate(45 193.2 102.5)"/><ellipse cx="189.4" cy="102.5" rx="1.8" ry="1.5" transform="rotate(135 189.4 102.5)"/><ellipse cx="189.4" cy="98.7" rx="1.8" ry="1.5" transform="rotate(225 189.4 98.7)"/><ellipse cx="193.2" cy="98.7" rx="1.8" ry="1.5" transform="rotate(315 193.2 98.7)"/></g><circle cx="191.28336328765405" cy="100.61920915414332" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="199.6" cy="103.5" rx="1.7" ry="1.3" transform="rotate(45 199.6 103.5)"/><ellipse cx="196.2" cy="103.5" rx="1.7" ry="1.3" transform="rotate(135 196.2 103.5)"/><ellipse cx="196.2" cy="100.1" rx="1.7" ry="1.3" transform="rotate(225 196.2 100.1)"/><ellipse cx="199.6" cy="100.1" rx="1.7" ry="1.3" transform="rotate(315 199.6 100.1)"/></g><circle cx="197.8705606947315" cy="101.76008425751276" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="189.1" cy="106.5" rx="1.8" ry="1.4" transform="rotate(45 189.1 106.5)"/><ellipse cx="185.4" cy="106.5" rx="1.8" ry="1.4" transform="rotate(135 185.4 106.5)"/><ellipse cx="185.4" cy="102.9" rx="1.8" ry="1.4" transform="rotate(225 185.4 102.9)"/><ellipse cx="189.1" cy="102.9" rx="1.8" ry="1.4" transform="rotate(315 189.1 102.9)"/></g><circle cx="187.23702384798773" cy="104.72456714935043" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="193.2" cy="108.9" rx="1.9" ry="1.5" transform="rotate(45 193.2 108.9)"/><ellipse cx="189.3" cy="108.9" rx="1.9" ry="1.5" transform="rotate(135 189.3 108.9)"/><ellipse cx="189.3" cy="105.0" rx="1.9" ry="1.5" transform="rotate(225 189.3 105.0)"/><ellipse cx="193.2" cy="105.0" rx="1.9" ry="1.5" transform="rotate(315 193.2 105.0)"/></g><circle cx="191.21795729884053" cy="106.93902769714649" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="204.1" cy="101.7" rx="2.0" ry="1.6" transform="rotate(45 204.1 101.7)"/><ellipse cx="200.0" cy="101.7" rx="2.0" ry="1.6" transform="rotate(135 200.0 101.7)"/><ellipse cx="200.0" cy="97.6" rx="2.0" ry="1.6" transform="rotate(225 200.0 97.6)"/><ellipse cx="204.1" cy="97.6" rx="2.0" ry="1.6" transform="rotate(315 204.1 97.6)"/></g><circle cx="202.056306122939" cy="99.66894492179068" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="219.2" cy="80.4" rx="1.9" ry="1.5" transform="rotate(45 219.2 80.4)"/><ellipse cx="215.3" cy="80.4" rx="1.9" ry="1.5" transform="rotate(135 215.3 80.4)"/><ellipse cx="215.3" cy="76.5" rx="1.9" ry="1.5" transform="rotate(225 215.3 76.5)"/><ellipse cx="219.2" cy="76.5" rx="1.9" ry="1.5" transform="rotate(315 219.2 76.5)"/></g><circle cx="217.24886561527381" cy="78.44432447923002" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="217.7" cy="79.8" rx="1.9" ry="1.5" transform="rotate(45 217.7 79.8)"/><ellipse cx="213.9" cy="79.8" rx="1.9" ry="1.5" transform="rotate(135 213.9 79.8)"/><ellipse cx="213.9" cy="76.0" rx="1.9" ry="1.5" transform="rotate(225 213.9 76.0)"/><ellipse cx="217.7" cy="76.0" rx="1.9" ry="1.5" transform="rotate(315 217.7 76.0)"/></g><circle cx="215.78950087444338" cy="77.93121133951426" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="231.7" cy="90.3" rx="2.1" ry="1.7" transform="rotate(45 231.7 90.3)"/><ellipse cx="227.4" cy="90.3" rx="2.1" ry="1.7" transform="rotate(135 227.4 90.3)"/><ellipse cx="227.4" cy="86.1" rx="2.1" ry="1.7" transform="rotate(225 227.4 86.1)"/><ellipse cx="231.7" cy="86.1" rx="2.1" ry="1.7" transform="rotate(315 231.7 86.1)"/></g><circle cx="229.52319077557894" cy="88.20633292094132" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="218.8" cy="86.3" rx="1.8" ry="1.4" transform="rotate(45 218.8 86.3)"/><ellipse cx="215.2" cy="86.3" rx="1.8" ry="1.4" transform="rotate(135 215.2 86.3)"/><ellipse cx="215.2" cy="82.7" rx="1.8" ry="1.4" transform="rotate(225 215.2 82.7)"/><ellipse cx="218.8" cy="82.7" rx="1.8" ry="1.4" transform="rotate(315 218.8 82.7)"/></g><circle cx="216.99470716242573" cy="84.51352011444739" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="254.4" cy="69.5" rx="2.1" ry="1.7" transform="rotate(45 254.4 69.5)"/><ellipse cx="250.1" cy="69.5" rx="2.1" ry="1.7" transform="rotate(135 250.1 69.5)"/><ellipse cx="250.1" cy="65.2" rx="2.1" ry="1.7" transform="rotate(225 250.1 65.2)"/><ellipse cx="254.4" cy="65.2" rx="2.1" ry="1.7" transform="rotate(315 254.4 65.2)"/></g><circle cx="252.21223050801464" cy="67.38501784965021" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="260.2" cy="69.6" rx="2.2" ry="1.8" transform="rotate(45 260.2 69.6)"/><ellipse cx="255.7" cy="69.6" rx="2.2" ry="1.8" transform="rotate(135 255.7 69.6)"/><ellipse cx="255.7" cy="65.1" rx="2.2" ry="1.8" transform="rotate(225 255.7 65.1)"/><ellipse cx="260.2" cy="65.1" rx="2.2" ry="1.8" transform="rotate(315 260.2 65.1)"/></g><circle cx="257.9641051079869" cy="67.35858004635904" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="243.8" cy="65.8" rx="2.2" ry="1.8" transform="rotate(45 243.8 65.8)"/><ellipse cx="239.3" cy="65.8" rx="2.2" ry="1.8" transform="rotate(135 239.3 65.8)"/><ellipse cx="239.3" cy="61.3" rx="2.2" ry="1.8" transform="rotate(225 239.3 61.3)"/><ellipse cx="243.8" cy="61.3" rx="2.2" ry="1.8" transform="rotate(315 243.8 61.3)"/></g><circle cx="241.52209410910507" cy="63.51871716129347" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="71.2" cy="172.5" rx="1.9" ry="1.5" transform="rotate(45 71.2 172.5)"/><ellipse cx="67.3" cy="172.5" rx="1.9" ry="1.5" transform="rotate(135 67.3 172.5)"/><ellipse cx="67.3" cy="168.5" rx="1.9" ry="1.5" transform="rotate(225 67.3 168.5)"/><ellipse cx="71.2" cy="168.5" rx="1.9" ry="1.5" transform="rotate(315 71.2 168.5)"/></g><circle cx="69.28012150770994" cy="170.50735659247619" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="61.8" cy="161.1" rx="2.0" ry="1.6" transform="rotate(45 61.8 161.1)"/><ellipse cx="57.6" cy="161.1" rx="2.0" ry="1.6" transform="rotate(135 57.6 161.1)"/><ellipse cx="57.6" cy="156.9" rx="2.0" ry="1.6" transform="rotate(225 57.6 156.9)"/><ellipse cx="61.8" cy="156.9" rx="2.0" ry="1.6" transform="rotate(315 61.8 156.9)"/></g><circle cx="59.70918669300384" cy="159.006324008391" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="65.4" cy="171.5" rx="1.8" ry="1.5" transform="rotate(45 65.4 171.5)"/><ellipse cx="61.6" cy="171.5" rx="1.8" ry="1.5" transform="rotate(135 61.6 171.5)"/><ellipse cx="61.6" cy="167.7" rx="1.8" ry="1.5" transform="rotate(225 61.6 167.7)"/><ellipse cx="65.4" cy="167.7" rx="1.8" ry="1.5" transform="rotate(315 65.4 167.7)"/></g><circle cx="63.464576627160014" cy="169.6362288913705" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="148.9" cy="63.2" rx="2.0" ry="1.6" transform="rotate(45 148.9 63.2)"/><ellipse cx="144.8" cy="63.2" rx="2.0" ry="1.6" transform="rotate(135 144.8 63.2)"/><ellipse cx="144.8" cy="59.0" rx="2.0" ry="1.6" transform="rotate(225 144.8 59.0)"/><ellipse cx="148.9" cy="59.0" rx="2.0" ry="1.6" transform="rotate(315 148.9 59.0)"/></g><circle cx="146.82898976699693" cy="61.111888434943026" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="144.2" cy="68.4" rx="1.8" ry="1.5" transform="rotate(45 144.2 68.4)"/><ellipse cx="140.4" cy="68.4" rx="1.8" ry="1.5" transform="rotate(135 140.4 68.4)"/><ellipse cx="140.4" cy="64.6" rx="1.8" ry="1.5" transform="rotate(225 140.4 64.6)"/><ellipse cx="144.2" cy="64.6" rx="1.8" ry="1.5" transform="rotate(315 144.2 64.6)"/></g><circle cx="142.30385316001576" cy="66.50234806029366" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="143.7" cy="67.8" rx="1.6" ry="1.3" transform="rotate(45 143.7 67.8)"/><ellipse cx="140.4" cy="67.8" rx="1.6" ry="1.3" transform="rotate(135 140.4 67.8)"/><ellipse cx="140.4" cy="64.4" rx="1.6" ry="1.3" transform="rotate(225 140.4 64.4)"/><ellipse cx="143.7" cy="64.4" rx="1.6" ry="1.3" transform="rotate(315 143.7 64.4)"/></g><circle cx="142.0439806459447" cy="66.10410026465189" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="252.8" cy="112.2" rx="1.7" ry="1.4" transform="rotate(45 252.8 112.2)"/><ellipse cx="249.3" cy="112.2" rx="1.7" ry="1.4" transform="rotate(135 249.3 112.2)"/><ellipse cx="249.3" cy="108.7" rx="1.7" ry="1.4" transform="rotate(225 249.3 108.7)"/><ellipse cx="252.8" cy="108.7" rx="1.7" ry="1.4" transform="rotate(315 252.8 108.7)"/></g><circle cx="251.08070546885887" cy="110.47213050168136" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="261.5" cy="100.0" rx="1.8" ry="1.4" transform="rotate(45 261.5 100.0)"/><ellipse cx="257.9" cy="100.0" rx="1.8" ry="1.4" transform="rotate(135 257.9 100.0)"/><ellipse cx="257.9" cy="96.4" rx="1.8" ry="1.4" transform="rotate(225 257.9 96.4)"/><ellipse cx="261.5" cy="96.4" rx="1.8" ry="1.4" transform="rotate(315 261.5 96.4)"/></g><circle cx="259.6867046116889" cy="98.19259375271054" r=".9" fill="#e0c48f"/><g fill="rgba(241,228,206,.28)" stroke="#f3e8d6" stroke-width=".45"><ellipse cx="267.0" cy="102.0" rx="2.0" ry="1.6" transform="rotate(45 267.0 102.0)"/><ellipse cx="262.9" cy="102.0" rx="2.0" ry="1.6" transform="rotate(135 262.9 102.0)"/><ellipse cx="262.9" cy="97.9" rx="2.0" ry="1.6" transform="rotate(225 262.9 97.9)"/><ellipse cx="267.0" cy="97.9" rx="2.0" ry="1.6" transform="rotate(315 267.0 97.9)"/></g><circle cx="264.9843137049264" cy="99.93156684644478" r=".9" fill="#e0c48f"/></symbol>
+    <symbol id="star4" viewBox="-10 -10 20 20"><path d="M0-10C1-2 2-1 10 0 2 1 1 2 0 10-1 2-2 1-10 0-2-1-1-2 0-10z" fill="#c5d3cf"/></symbol>
+    <symbol id="e-fire" viewBox="0 0 100 100">
+      <g class="ln"><circle cx="50" cy="56" r="22" stroke-dasharray="1 3.2"/>
+      <path d="M50 26c8 13 14 22 13 31-1 8-6 12-13 12s-12-4-13-12c-1-9 5-18 13-31z"/>
+      <path d="M50 46c4 7 6 11 5 15s-3 6-5 6-4-2-5-6 1-8 5-15z"/>
+      <path d="M50 4v12M50 84v12M14 56H4M96 56H86M24 30l-6-6M76 30l6-6M24 82l-6 6M76 82l6 6"/></g>
+    </symbol>
+    <symbol id="e-water" viewBox="0 0 100 100">
+      <g class="ln"><path d="M62 12a30 30 0 1 0 0 52 26 26 0 1 1 0-52z"/>
+      <path d="M8 76c7-5 14 5 21 0s14 5 21 0 14 5 21 0 14 5 21 0"/>
+      <path d="M14 86c7-5 14 5 21 0s14 5 21 0 14 5 21 0 7 3 9 1"/>
+      <path d="M22 95c7-4 14 4 21 0s14 4 21 0 14 4 18 1"/></g>
+      <use href="#star4" x="70" y="18" width="10" height="10"/><circle cx="78" cy="42" r="1.2" class="lnf"/>
+    </symbol>
+    <symbol id="e-metal" viewBox="0 0 100 100">
+      <g class="ln"><path d="M50 8L72 38 50 92 28 38z"/><path d="M28 38h44M50 8l-9 30 9 54 9-54z"/>
+      <path d="M50 2v4M86 30l-6 3M14 30l6 3"/></g>
+      <use href="#star4" x="76" y="56" width="12" height="12"/><use href="#star4" x="14" y="64" width="8" height="8"/>
+    </symbol>
+    <symbol id="e-earth" viewBox="0 0 100 100">
+      <g class="ln"><path d="M6 80L36 34l14 18 14-26 30 54z"/><path d="M36 34l-6 20 8 10M64 26l-4 22 10 14"/>
+      <path d="M2 86h96M14 92h72"/><circle cx="78" cy="18" r="7"/></g>
+      <circle cx="78" cy="18" r="2" class="lnf"/>
+    </symbol>
+    <symbol id="e-wood" viewBox="0 0 100 100">
+      <g class="ln"><path d="M50 96V20"/><path d="M50 70c-14 0-24-8-26-20 14 0 24 8 26 20zM50 52c14 0 24-8 26-20-14 0-24 8-26 20zM50 34c-9-2-14-9-14-18 9 2 14 9 14 18z"/>
+      <path d="M38 96h24"/></g>
+      <use href="#star4" x="66" y="8" width="12" height="12"/><circle cx="22" cy="28" r="1.2" class="lnf"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="hero">
+  <div class="vcol l">秋分 · 丁卯年八月初七<br><span class="rule"></span><br>辛金生于酉月</div>
+  <div class="vcol r">Qiufen, the sixteenth solar term · when day and night stand equal and the waters begin to recede</div>
+  <div class="wrap">
+    <div class="num">辛</div>
+    <svg class="hero-art" id="heroArt" viewBox="-200 -230 400 470" role="img" aria-label="A faceted jewel washed by a fine fall of water before a pearl harvest moon, under a silver crescent, with hairline clouds, a branch of osmanthus in flower and autumn water below">
+      <circle cx="0" cy="-34" r="128" fill="url(#sunG)"/>
+      <circle cx="0" cy="-34" r="150" fill="none" stroke="#c5d3cf" stroke-width=".8" stroke-dasharray="1 5" opacity=".6"/>
+      <g id="heroRays" class="ln" opacity=".7"></g>
+      <path d="M-4-214a22 22 0 0 1 0 44a27 27 0 0 0 0-44z" fill="url(#goldG)"/>
+      <use href="#cloud" x="88" y="-214" width="120" height="60"/>
+      <g class="ln" stroke="url(#tideG)" opacity=".85">
+        <path d="M-6-160v58" stroke-dasharray="1 6"/><path d="M0-168v70" stroke-dasharray="2 5"/><path d="M6-160v58" stroke-dasharray="1 6"/>
+        <path d="M-14-148v38" stroke-dasharray="1 7" opacity=".6"/><path d="M14-148v38" stroke-dasharray="1 7" opacity=".6"/>
+      </g>
+      <use href="#osman" x="-204" y="-34" width="216" height="144" opacity=".95"/>
+      <use href="#gem" x="-66" y="-108" width="132" height="121"/>
+      <use href="#cloud" x="-200" y="96" width="200" height="100"/>
+      <g transform="translate(200 104) scale(-1 1)"><use href="#cloud" x="0" y="0" width="186" height="93"/></g>
+      <g class="ln">
+        <path d="M-150 186c25-12 50 12 75 0s50 12 75 0 50 12 75 0 50 12 75 0"/>
+        <path d="M-120 206c25-12 50 12 75 0s50 12 75 0 50 12 75 0 30 8 45 2"/>
+        <path d="M-80 226c25-10 50 10 75 0s50 10 75 0 20 6 30 2"/>
+      </g>
+      <use href="#star4" x="-180" y="-150" width="16" height="16"/><use href="#star4" x="160" y="-110" width="12" height="12"/>
+      <use href="#star4" x="166" y="40" width="14" height="14"/><use href="#star4" x="-176" y="-60" width="9" height="9"/>
+      <use href="#star4" x="46" y="-100" width="9" height="9"/><use href="#star4" x="-58" y="-6" width="7" height="7"/>
+    </svg>
+    <h1>Adrienne <span class="seal">辛<br>巳</span></h1>
+
+    <div class="sub">The jewel in autumn. A Four Pillars reading of the evening you arrived, in the week the days and nights stood equal, and the water that brings your light out.</div>
+    <div class="meta">
+      <div>Born<span>29 September 1987</span></div>
+      <div>Hour<span>Evening · read as 8:00 pm</span></div>
+      <div>Place<span>Toronto, Ontario</span></div>
+    </div>
+    <div class="dedic">For Adrienne, with love from Jane</div>
+  </div>
+</header>
+
+<main>
+<section id="pillars">
+  <div class="wrap">
+    <div class="sec-head"><span class="han">四柱八字</span><h2>The Four Pillars</h2><p>Eight characters, read right to left from ancestry toward legacy. The Day card is you.</p></div>
+    <div class="deck">
+
+      <article class="tarot">
+        <div class="tab">IV</div>
+        <div class="role">Hour · legacy &amp; later life</div>
+        <div class="god">Seven Killings <span class="han">七杀</span></div>
+        <svg class="emb"><use href="#e-fire"/></svg>
+        <div class="gly">丁</div><div class="el">Yin Fire</div>
+        <div class="gly b">酉</div><div class="el">Rooster · Metal</div>
+        <div class="hid"><span class="han">辛</span>Friend</div>
+        <div class="foot">The Hour<i>Fire at the Mountain's Foot · 山下火</i></div>
+      </article>
+
+      <article class="tarot dm">
+        <div class="tab">III</div>
+        <div class="role">Day · self &amp; heart</div>
+        <div class="god">Day Master <span class="han">日主</span></div>
+        <svg class="emb"><use href="#e-metal"/></svg>
+        <div class="gly">辛</div><div class="el">Yin Metal</div>
+        <div class="gly b">巳</div><div class="el">Snake · Fire</div>
+        <div class="hid"><span class="han">丙</span>Direct Officer<br><span class="han">庚</span>Rob Wealth<br><span class="han">戊</span>Direct Resource</div>
+        <div class="foot">The Day<i>White Wax Metal · 白蜡金</i></div>
+      </article>
+
+      <article class="tarot">
+        <div class="tab">II</div>
+        <div class="role">Month · career &amp; season</div>
+        <div class="god">Indirect Resource <span class="han">偏印</span></div>
+        <svg class="emb"><use href="#e-earth"/></svg>
+        <div class="gly">己</div><div class="el">Yin Earth</div>
+        <div class="gly b">酉</div><div class="el">Rooster · Metal</div>
+        <div class="hid"><span class="han">辛</span>Friend</div>
+        <div class="foot">The Month<i>Great Post-Road Earth · 大驿土</i></div>
+      </article>
+
+      <article class="tarot">
+        <div class="tab">I</div>
+        <div class="role">Year · roots &amp; family</div>
+        <div class="god">Seven Killings <span class="han">七杀</span></div>
+        <svg class="emb"><use href="#e-fire"/></svg>
+        <div class="gly">丁</div><div class="el">Yin Fire</div>
+        <div class="gly b">卯</div><div class="el">Rabbit · Wood</div>
+        <div class="hid"><span class="han">乙</span>Indirect Wealth</div>
+        <div class="foot">The Year<i>Fire in the Furnace · 炉中火</i></div>
+      </article>
+
+    </div>
+    <p class="stars-note">Your own seat holds your Officer star, which reaches up to embrace you <span class="han">丙辛合</span>. Two Roosters give you your root of prosperity <span class="han">禄</span> and the General's star <span class="han">将星</span>, and the Snake you sit on is your travelling horse <span class="han">驿马</span>: the signatures that shape much of what follows.</p>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="day-master">
+  <div class="wrap dm-grid">
+    <div class="pill pill-big">
+      <div class="cap" style="margin-bottom:14px">The Day Master</div>
+      <svg viewBox="0 0 200 260" role="img" aria-label="A faceted jewel in a pearl halo of rays, with water lines beneath">
+        <circle cx="100" cy="112" r="66" fill="url(#sunG)"/><g id="dmRays" class="ln"></g>
+        <use href="#gem" x="40" y="60" width="120" height="110"/>
+        <g class="ln"><path d="M40 214c10-6 20 6 30 0s20 6 30 0 20 6 30 0 20 6 30 0"/><path d="M56 228c10-6 20 6 30 0s20 6 30 0 20 6 30 0"/><path d="M76 242c8-5 16 5 24 0s16 5 24 0"/></g>
+        <use href="#star4" x="18" y="34" width="14" height="14"/><use href="#star4" x="168" y="74" width="10" height="10"/>
+      </svg>
+      <div class="han" style="font-size:54px;font-weight:900;color:var(--gold-hi);margin-top:10px">辛</div>
+      <div class="cap">Yin Metal · the Jewel</div>
+    </div>
+    <div class="prose">
+      <div class="sec-head" style="text-align:left;margin-bottom:22px"><span class="han" style="padding-left:0">日主</span><h2>The jewel in autumn</h2></div>
+      <p class="lede">You are <span class="han">辛</span>, the yin Metal: the gem, the pearl and the finished ring, metal that has already been refined into something worth looking at.</p>
+      <p>The classics describe <span class="han">辛</span> as soft, lustrous and clear. Where the yang Metal is ore and blade, valued for its strength, the yin Metal is valued for its finish: its clarity, its proportion and the light it holds. It is discerning by nature and quietly exacting, and it knows the difference between what is fine and what only looks it.</p>
+      <p>You were born in the Rooster month, the heart of autumn, when Metal governs the whole season. A jewel born here is at full strength and has nothing to prove. The old counsel for Xin in the eighth month is brief: wash it with <span class="han">壬</span> Water before anything else, keep heavy Earth from burying it and use Wood to clear the soil. A jewel is not made brighter by more metal, but by water running over it.</p>
+      <p>Your day pillar <span class="han">辛巳</span> sets you on the Snake, the place where Metal is born, and inside it waits <span class="han">丙</span>, the sun, your Direct Officer, reaching up to embrace you. The classics call this the union of sun and jewel: a gem only shows its fire when light falls on it. The Nayin names your seat <em>White Wax Metal</em>, metal still soft from the furnace, which is why the right warmth shapes you and the wrong heat only tires you.</p>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="elements">
+  <div class="wrap">
+    <div class="sec-head"><span class="han">五行</span><h2>The Five Elements</h2></div>
+    <div class="el-grid">
+      <svg id="orbit" viewBox="-240 -240 480 480" role="img" aria-label="The five elements on the generating cycle, each sized by its strength in your chart: Metal 58 percent, Fire 23, Earth 11, Wood 8, Water 0. Water and Wood are marked as favourable."></svg>
+      <div>
+        <p>The chart is high autumn with a lamp lit inside it. Metal carries more than half of its weighted strength, rooted twice in the Rooster and drawn together by the Snake <span class="han">巳酉</span>, so tradition calls this Day Master <em>strong</em>. Two small Fires stand guard in the open sky and a single tree of Wood stands at the root of the year.</p>
+        <div class="bars" role="img" aria-label="Weighted element strength: Metal 58 percent, Fire 23, Earth 11, Wood 8, Water 0">
+          <div class="bar"><span class="nm">Metal<span class="han">金</span></span><span class="tr"><span class="fi" style="width:58%"></span></span><span class="v">58%</span></div>
+          <div class="bar"><span class="nm">Fire<span class="han">火</span></span><span class="tr"><span class="fi" style="width:23%"></span></span><span class="v">23%</span></div>
+          <div class="bar"><span class="nm">Earth<span class="han">土</span></span><span class="tr"><span class="fi" style="width:11%"></span></span><span class="v">11%</span></div>
+          <div class="bar"><span class="nm">Wood<span class="han">木</span></span><span class="tr"><span class="fi" style="width:8%"></span></span><span class="v">8%</span></div>
+          <div class="bar"><span class="nm">Water<span class="han">水</span></span><span class="tr"><span class="fi" style="width:0%"></span></span><span class="v">0%</span></div>
+        </div>
+        <p class="small">Seasonally weighted strength including hidden stems. By simple count: Metal 3, Fire 3, Earth 1, Wood 1, Water 0. Not one of your eight characters or their hidden stems carries Water, which is why the years that bring it matter so much.</p>
+        <div class="roles">
+          <span class="role-chip fav">Primary ally · <b>Water</b></span>
+          <span class="role-chip fav">Support · <b>Wood</b></span>
+          <span class="role-chip">Enough · <b>Fire</b></span>
+          <span class="role-chip">Heavy · <b>Metal</b></span>
+          <span class="role-chip">Caution · <b>Earth</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="reading">
+  <svg class="deco r" viewBox="0 0 200 100" aria-hidden="true"><use href="#cloud" x="0" y="0" width="200" height="100"/></svg>
+  <div class="wrap">
+    <div class="sec-head"><span class="han">命解</span><h2>The Reading</h2></div>
+    <div class="talismans">
+
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln">
+          <path d="M10 92c20-4 40-30 50-30s30 26 50 30"/><path d="M60 62V22"/><path d="M44 30l16-12 16 12"/>
+          <path d="M22 106h76" stroke-dasharray="2 4"/><circle cx="60" cy="60" r="44" stroke-dasharray="1 4"/></g>
+          <use href="#star4" x="16" y="16" width="12" height="12"/><use href="#star4" x="92" y="30" width="9" height="9"/></svg>
+        <div class="k">禄 · 将星</div>
+        <h3>Your own ground, twice</h3>
+        <p>The Rooster is where Xin Metal is most at home, and you hold it twice, in your month and your hour. That is self-possession written into the chart: you stand on your own, you recover your footing quickly and you are rarely as dependent on anyone as they might assume.</p>
+        <p>Read from your own seat, the same Roosters are the <em>General's star</em>, the mark of someone others steady themselves around in a crisis.</p>
+        <div class="src">Month 酉 · hour 酉</div>
+      </article>
+
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln">
+          <path d="M60 18c8 12 12 20 11 27s-5 10-11 10-10-3-11-10 3-15 11-27z"/><path d="M34 70h52l-8 14H42z"/><path d="M60 84v16"/>
+          <path d="M44 104h32"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><use href="#star4" x="88" y="84" width="14" height="14"/></svg>
+        <div class="k">杀印相生</div>
+        <h3>Pressure into standing</h3>
+        <p>The Fire of your year is <em>Seven Killings</em>, the star of pressure, challenge and demanding people. It feeds the Earth of your month, your <em>Resource</em>, and that Earth feeds you. Classical readers prize this chain, Killings producing Resource, because it turns hardship into skill and standing instead of wear.</p>
+        <p>The tests in your life have a way of becoming credentials. What tried you is usually what taught you.</p>
+        <div class="src">Year 丁 → month 己 → day 辛</div>
+      </article>
+
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln">
+          <circle cx="60" cy="44" r="18"/><path d="M60 14v8M60 66v6M30 44h8M82 44h8M39 23l6 6M81 23l-6 6"/>
+          <path d="M44 96l16-20 16 20-16 12z"/><path d="M44 96h32"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g>
+          <use href="#star4" x="90" y="14" width="12" height="12"/></svg>
+        <div class="k">丙辛合 · 驿马</div>
+        <h3>The sun in your house</h3>
+        <p>The Snake beneath you hides <span class="han">丙</span>, the sun, and it combines with you. A jewel in sunlight is the classical image of a person seen at her best: the right setting, the right partner and the right role are what bring out your fire.</p>
+        <p>Read from your year, the same Snake is your <em>travelling horse</em>. The ground you stand on moves, and much of what is good in your life arrives through movement, distance and new places.</p>
+        <div class="src">Day branch 巳 · hidden 丙</div>
+      </article>
+
+    </div>
+
+    <div class="long">
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>The water that is missing</h3>
+        <div class="k">壬水淘洗</div>
+        <p>For a strong jewel the most precious element is Water, the river that washes it and lets it shine. Water is also, for Xin Metal, the star of expression: talent, voice, wit and the work you make. In your birth chart there is none at all, in the open or hidden.</p>
+        <p>So your brilliance has never been simply handed to you; it is released by the seasons of life that carry Water. Your luck brought it as two whole decades, from 2010 to 2030, and again as single years such as 2031 and 2032. When the water comes, you are seen.</p>
+        <div class="foot">Favourable · Water, then Wood</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>The Rooster and the Rabbit</h3>
+        <div class="k">卯酉冲</div>
+        <p>Your only Wood, the Rabbit of your year, is your <em>Wealth</em>, and both Roosters clash it. The Rabbit and Rooster are the eastern and western gates of the sky, so this is a chart of doors that open and close: roots you left, money that moves rather than sits and a family story with more turns in it than it shows.</p>
+        <p>The clash asks you to guard what you grow from the claims of peers, and it also keeps you from standing still. Wood years and the long Wood decades from 2030 are where the Rabbit finally gets company.</p>
+        <div class="foot">Year pillar 丁卯</div>
+      </article>
+    </div>
+    <div class="long" style="grid-template-columns:1fr">
+      <article class="tarot">
+        <div class="tab">♡</div>
+        <h3>The heart</h3>
+        <div class="k">夫宫 · 丙辛合</div>
+        <p style="max-width:760px;margin-left:auto;margin-right:auto">Your spouse palace holds your husband star, the hidden <span class="han">丙</span> sun, and it embraces you: the classical image of a faithful, close and warming bond, and of a partner who becomes home. Two more Fires stand in the open sky as <em>Seven Killings</em>, the brilliant and demanding attractions. Your chart opens most to the one who warms you steadily rather than the one who tests you, and the Snake, your travelling horse, suggests love tied to movement: met far from home, or a life built across places.</p>
+        <div class="foot">Day branch 巳 · hidden 丙 · Killings 丁 丁</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="temperament">
+  <div class="wrap">
+    <div class="sec-head"><span class="han">性情</span><h2>The Inner Weather</h2><p>How your nature moves: what you hold, what you give and how your voice is changing.</p></div>
+    <div class="long">
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>What you are made of</h3>
+        <div class="k">辛 · 禄 · 日入天秤</div>
+        <p>A jewel at full strength gives you poise, taste and an unusually clear sense of quality: you notice proportion, finish and tone before other people notice the room. A Libra Sun, ruled by Venus in her own sign, adds diplomacy, fairness and a wish for things to be beautiful and right. A Capricorn Moon makes you dependable, private and composed under weight.</p>
+        <p>These are the virtues of a connoisseur and a keeper of standards. You are generous with people who meet you honestly, and you make difficult things look effortless because you have quietly done the work.</p>
+        <div class="foot">Poise · discernment · grace under weight</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>The held voice</h3>
+        <div class="k">无水 · 七杀 · 水星天蝎</div>
+        <p>With no Water at birth, feeling runs inward. You process alone, decide quietly and show the result rather than the struggle, and a Scorpio Mercury keeps your sharpest thoughts for the few who have earned them. Two Seven Killings stars push you hard: your standards for yourself are higher than anyone else's for you.</p>
+        <p>The edge of this is perfectionism, and a self-criticism that can arrive before praise does. When you hold too much for too long, the jewel clouds; when you say it, make it or move, it clears.</p>
+        <div class="foot">Holding · refining · the voice coming out</div>
+      </article>
+    </div>
+    <div class="long" style="grid-template-columns:1fr">
+      <article class="tarot">
+        <div class="tab">♡</div>
+        <h3>Letting the water in</h3>
+        <div class="k">水洗金 · 木疏土</div>
+        <p style="max-width:780px;margin-left:auto;margin-right:auto">Strong Metal grows brittle when it is kept in a drawer and luminous when it is worn. Your own remedies are Water and Wood: expression and growth. In life that means making things and letting them be seen before they are perfect, conversation that is allowed to wander, swimming, the sea, long walks after rain and people who are curious rather than impressed. A jewel that is handled keeps its shine.</p>
+        <div class="foot">Brilliance is released, not polished</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="love">
+  <svg class="deco l" viewBox="0 0 200 100" aria-hidden="true"><use href="#cloud" x="0" y="0" width="200" height="100"/></svg>
+  <div class="wrap">
+    <div class="sec-head"><span class="han">情缘</span><h2>Love &amp; Romance</h2><p>How you love, who suits you and the seasons in which love opens and deepens.</p></div>
+    <div class="talismans">
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><circle cx="60" cy="46" r="16"/><path d="M60 20v6M60 66v4M34 46h6M80 46h6"/><path d="M46 96l14-18 14 18-14 10z"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><use href="#star4" x="88" y="16" width="12" height="12"/></svg>
+        <div class="k">夫星坐日支 · 丙辛合</div>
+        <h3>The sun that holds you</h3>
+        <p>Your husband star lives in your own seat and combines with you. Love for you is close, loyal and binding: once you choose, you choose fully, and the right partner feels less like an event than like the light you were always meant to be seen in.</p>
+        <div class="src">Day branch 巳 · hidden 丙</div>
+      </article>
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><circle cx="60" cy="48" r="20"/><path d="M60 68v34M46 88h28"/><path d="M14 40c10-8 20 8 30 0M76 40c10-8 20 8 30 0"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><use href="#star4" x="54" y="42" width="12" height="12"/></svg>
+        <div class="k">金星入天秤</div>
+        <h3>Venus at home</h3>
+        <p>Venus is in Libra, her own sign, and she also rules your Rising sign. Love is central to how you understand yourself: partnership, beauty, courtesy and a shared life well arranged. You give elegantly and notice everything. The lesson is to let love be a little untidy too.</p>
+        <div class="src">Venus · 16° Libra · chart ruler</div>
+      </article>
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><path d="M30 76c10-30 50-30 60 0"/><path d="M40 76c8-18 32-18 40 0"/><path d="M60 40V16"/><path d="M24 92h72"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><use href="#star4" x="86" y="22" width="12" height="12"/></svg>
+        <div class="k">冥王 · 水星入七宫</div>
+        <h3>Deep water between two</h3>
+        <p>Mercury and Pluto sit in Scorpio in your house of partnership. The only Water in your Western chart lives there, between you and another. You need depth in love, real conversation and total honesty, and the people closest to you change you profoundly.</p>
+        <div class="src">Mercury 1° · Pluto 8° Scorpio · 7th</div>
+      </article>
+    </div>
+
+    <div class="long">
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>Who suits you</h3>
+        <div class="k">喜水木 · 忌重土</div>
+        <p>Your chart opens most to a partner who brings Water and Wood: curiosity, ease, humour and a sense of growing somewhere together. You are already strong, so you do not need someone to stand behind you; you need someone who draws you out and lets you be seen.</p>
+        <p>Heavy Earth is the classical danger for a jewel: a partner who buries, smothers or manages you, however lovingly. Look for someone who admires your edges and would never try to set you in something smaller.</p>
+        <div class="foot">Ease before weight</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>The steady sun and the bright flame</h3>
+        <div class="k">官杀混杂</div>
+        <p>In a woman's chart both the Officer and Seven Killings are partner stars. You hold one of each kind: the steady sun in your own house, and two bright, demanding flames in the open sky. Life tends to offer you both the loyal choice and the electric one, sometimes at the same time.</p>
+        <p>Your chart's answer is clear. The sun that combines with you is the bond that holds; the flames are the ones that teach. Love the one who warms you and learn from the ones who burn.</p>
+        <div class="foot">Warmth that stays · fire that teaches</div>
+      </article>
+    </div>
+
+    <div class="long">
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>What to tend</h3>
+        <div class="k">无水 · 卯酉冲</div>
+        <ul class="ky" style="border-top:none;padding-top:0;margin-bottom:24px">
+          <li><b>Showing</b>You show the finished feeling, not the forming one. Let a partner see you before you have decided what you feel.</li>
+          <li><b>Standards</b>Your eye is exacting. Keep it for the work, and let the person off the inspection.</li>
+          <li><b>Distance</b>The travelling horse in your seat moves the ground under love. Decide together where home is, then let it travel.</li>
+          <li><b>Yourself</b>Venus rules your whole chart. Keep beauty and friendship of your own alive alongside love.</li>
+        </ul>
+        <div class="foot">Say it before it is polished</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>The love calendar</h3>
+        <div class="k">流年 · 桃花</div>
+        <ul class="ky" style="border-top:none;padding-top:0;margin-bottom:24px">
+          <li><b>2026 丙午</b>The sun of your husband star combines with you in the open sky, over your Peach Blossom and your Nobleman: the strongest love year in the reading.</li>
+          <li><b>2027 丁未</b>Seven Killings in full: attraction and intensity, and a test of what you truly want.</li>
+          <li><b>2028 戊申</b>The Monkey embraces your seat: commitment, a shared home or a promise made.</li>
+          <li><b>Every June</b>The Horse month is your Peach Blossom read from your seat: warmth, charm and meeting.</li>
+          <li><b>2031 辛亥</b>The Pig clashes your seat and sets the horse running: a move, a distance or a change at home to steer together.</li>
+          <li><b>2036 丙辰</b>The sun combines with you again: a decade's devotion renewed.</li>
+        </ul>
+        <div class="foot">Summers favour love · autumns ask for patience</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="career">
+  <svg class="deco r" viewBox="0 0 200 100" aria-hidden="true"><use href="#cloud" x="0" y="0" width="200" height="100"/></svg>
+  <div class="wrap">
+    <div class="sec-head"><span class="han">事业</span><h2>The Work</h2><p>What your chart is built to do, the kind of work that pays you best and the milestones of your career.</p></div>
+    <div class="talismans">
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><path d="M40 52l20-20 20 20-20 40z"/><path d="M40 52h40M60 32l-8 20 8 40 8-40z"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><use href="#star4" x="90" y="14" width="12" height="12"/></svg>
+        <div class="k">辛金 · 日入六宫</div>
+        <h3>The finisher's eye</h3>
+        <p>Xin Metal is the element of refinement, and your Libra Sun works in the house of daily craft. You are built for the last ten per cent: editing, curating, designing, judging quality and making the complicated graceful. People bring you something good and you make it right.</p>
+        <div class="src">Day Master 辛 · Sun in the 6th</div>
+      </article>
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><path d="M60 16l30 18v34c0 18-14 30-30 36-16-6-30-18-30-36V34z"/><path d="M60 40v36M48 58h24"/></g><use href="#star4" x="92" y="20" width="12" height="12"/></svg>
+        <div class="k">杀印相生 · 将星</div>
+        <h3>Authority through mastery</h3>
+        <p>Killings feeding Resource is the classical shape of the expert who rises under pressure: rank earned through skill, study and composure. Your General's star means you lead best when the stakes are real, and people settle when you take the room.</p>
+        <div class="src">Year 丁 · month 己 · 酉 酉</div>
+      </article>
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><path d="M20 96L60 24l40 72z"/><path d="M42 64h36"/><path d="M60 24V12"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><use href="#star4" x="88" y="16" width="12" height="12"/></svg>
+        <div class="k">摩羯天顶 · 九宫</div>
+        <h3>The long climb</h3>
+        <p>A Capricorn Midheaven builds a reputation slowly and permanently: authority, institutions and a name that stands for something. Your Moon and Neptune in the ninth house widen it across borders, toward teaching, publishing, culture and work with an international reach.</p>
+        <div class="src">MC 17° Capricorn · Moon in the 9th</div>
+      </article>
+    </div>
+    <div class="long">
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>The version that pays you best</h3>
+        <div class="k">伤官生财 · 身强</div>
+        <p>A strong jewel is paid most for what only it can do. Your wealth runs best when Water carries your talent into Wood: your eye, voice and taste made into work that others pay for. Doing more of what you already do, under someone else's standard, is Metal on Metal; it makes you capable before it makes you rich.</p>
+        <p>The structures that suit you are signature work, a recognised name, advisory and creative fees, ownership and anything where quality sets the price. From 2030 your luck turns to Wood itself, the decades in which that talent is finally paid in full.</p>
+        <div class="foot">Paid for your eye, not your hours</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>Career milestones</h3>
+        <div class="k">流年 · 大运</div>
+        <ul class="ky" style="border-top:none;padding-top:0">
+          <li><b>2026 丙午</b>A title, a patron or a role that shows you at your best.</li>
+          <li><b>2028 戊申</b>Credentials and backing; a new idea finds its form.</li>
+          <li><b>2030 甲寅运</b>The decade of Wealth and benefactors opens in November.</li>
+          <li><b>2032 壬子</b>The washing year: your talent in full flood and widely seen.</li>
+          <li><b>2034 甲寅</b>Wealth over your Nobleman: the strongest money year in the reading.</li>
+          <li><b>2036 丙辰</b>Seniority and a title that fits.</li>
+          <li><b>2050 丙辰运</b>The sun stands over a whole decade: honour and standing in later life.</li>
+        </ul>
+        <div class="foot">The arc bends upward from forty</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="abundance">
+  <svg class="deco l" viewBox="0 0 200 100" aria-hidden="true"><use href="#cloud" x="0" y="0" width="200" height="100"/></svg>
+  <div class="wrap">
+    <div class="sec-head"><span class="han">财运</span><h2>The Abundance Reading</h2><p>How wealth moves through your chart, where it comes from and what the next ten years hold.</p></div>
+
+    <div class="ab-intro">
+      <p class="lede">In Bazi, wealth is whatever the Day Master can shape and hold. For a jewel that is Wood, and yours stands alone: one Rabbit at the root of your year, carrying hidden <span class="han">乙</span>, your Indirect Wealth.</p>
+      <div>
+        <p>Classical readers would call yours a <em>strong self with slender wealth</em> <span class="han">身强财弱</span>. That is not a poor chart. It is a chart strong enough to carry far more than it was born holding, which means wealth here is grown rather than inherited, and it grows best through talent. The missing link between a jewel and its wealth is Water, the element of expression, and your luck supplied it from 2010.</p>
+        <p>The order of your life is unusually clear: first the water, then the wood. Two Water decades bring your gifts out; then from 2030 two whole decades of Wood stand in your luck, Wealth itself, with your Nobleman beneath the first. What you have been building is about to be harvested.</p>
+      </div>
+    </div>
+
+    <div class="channels">
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><path d="M18 40c10-8 20 8 30 0s20 8 30 0 20 8 30 0"/><path d="M18 52c10-8 20 8 30 0s20 8 30 0 20 8 30 0"/><path d="M60 110V70"/><path d="M60 92c-12 0-20-6-22-16 12 0 20 6 22 16zM60 80c12 0 20-6 22-16-12 0-20 6-22 16z"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><use href="#star4" x="90" y="16" width="12" height="12"/></svg>
+        <div class="k">食伤生财</div>
+        <h3>The talent stream</h3>
+        <p>Your first river of wealth is expression: what you see, make and say. When Water carries your taste into the world, money follows. Your highest returns come from work signed with your own eye.</p>
+        <div class="src">Water in your luck · Wood as wealth</div>
+      </article>
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><path d="M60 100V30"/><path d="M60 72c-14 0-24-8-26-20 14 0 24 8 26 20zM60 54c14 0 24-8 26-20-14 0-24 8-26 20z"/><path d="M20 100h80"/><path d="M28 100V82M92 100V82" stroke-dasharray="2 3"/></g><use href="#star4" x="16" y="20" width="12" height="12"/></svg>
+        <div class="k">偏财</div>
+        <h3>The open field</h3>
+        <p>Indirect Wealth is the entrepreneur's money: ventures, deals and several streams at once, found beyond the family and the salary. Yours sits in the year pillar, so it tends to come from wide circles, other places and the world beyond where you began.</p>
+        <div class="src">Year branch 卯 · hidden 乙</div>
+      </article>
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><circle cx="60" cy="44" r="16"/><path d="M36 100c4-22 14-34 24-34s20 12 24 34"/><path d="M60 14v8M34 26l5 5M86 26l-5 5"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><use href="#star4" x="88" y="18" width="12" height="12"/><use href="#star4" x="18" y="34" width="9" height="9"/></svg>
+        <div class="k">天乙贵人 · 官星</div>
+        <h3>The patron</h3>
+        <p>Your Noblemen are the Tiger and the Horse, and neither is in your birth chart: help arrives from outside, through people of standing. The years that bring them, 2026 and 2034, and the Tiger decade from 2030, are when doors open and money follows rank.</p>
+        <div class="src">Nobleman 寅 · 午</div>
+      </article>
+    </div>
+
+    <div class="sec-head" style="margin-bottom:24px"><span class="han">十年财运</span><h2 style="font-size:clamp(30px,4vw,42px)">The coming decade, year by year</h2></div>
+    <div class="ledger">
+      <div class="lrow"><div class="y">2026</div><div class="g">丙午</div><div class="moons" role="img" aria-label="Abundance 4 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></div><div class="t"><b>Fire Horse · the sun on the jewel</b><p>Your Officer stands in the open sky and combines with you, over the Horse that is both your Nobleman and your Peach Blossom. Recognition, a patron and a role that shows you well. Money this year follows title and introductions more than effort.</p></div></div>
+      <div class="lrow"><div class="y">2027</div><div class="g">丁未</div><div class="moons" role="img" aria-label="Abundance 4 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></div><div class="t"><b>Fire Goat · the vault opens</b><p>Seven Killings brings pressure, and the Goat below is the storehouse of Wood, your wealth vault, drawing your lone Rabbit into a half frame of Wood. A demanding year that pays: take on the harder thing and build the structure that keeps what it earns.</p></div></div>
+      <div class="lrow"><div class="y">2028</div><div class="g">戊申</div><div class="moons" role="img" aria-label="Abundance 3 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></div><div class="t"><b>Earth Monkey · water from the seat</b><p>Direct Resource above brings backing, learning and paperwork. The Monkey embraces your Snake and the pair turn to Water, so a new idea or partnership finds its form. Steady rather than spectacular; a good year to formalise.</p></div></div>
+      <div class="lrow"><div class="y">2029</div><div class="g">己酉</div><div class="moons" role="img" aria-label="Abundance 2 of 5"><i class="f"></i><i class="f"></i><i></i><i></i><i></i></div><div class="t"><b>Earth Rooster · the season returns</b><p>Your month pillar repeats exactly and a third Rooster clashes your Wealth. Peers and obligations crowd the field. Refine rather than expand, keep agreements in writing and decline to lend or co-sign.</p></div></div>
+      <div class="lrow"><div class="y">2030</div><div class="g">庚戌</div><div class="moons" role="img" aria-label="Abundance 3 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></div><div class="t"><b>Metal Dog · the hinge</b><p>Rob Wealth above asks for clean shared accounts, while the Dog embraces your Rabbit toward Fire, wealth turning into standing. In November your luck turns to <span class="han">甲寅</span>, Wealth over your Nobleman. Close the old decade carefully; the new one is generous.</p></div></div>
+      <div class="lrow"><div class="y">2031</div><div class="g">辛亥</div><div class="moons" role="img" aria-label="Abundance 4 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></div><div class="t"><b>Metal Pig · the river and the road</b><p>The Pig carries Water and the seed of Wood, and it joins your Rabbit toward Wood: talent turning into Wealth. It also clashes your seat and sets the travelling horse running. Money through a move, a new market or work that crosses borders.</p></div></div>
+      <div class="lrow peak"><div class="y">2032</div><div class="g">壬子</div><div class="moons" role="img" aria-label="Abundance 5 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></div><div class="t"><b>Water Rat · the washing</b><p>The year the classics would choose for you: <span class="han">壬</span> Water pours over the jewel, and the Rat is your Literary Star. Inside a Wood decade, that Water feeds Wealth directly. Your work in full flood and widely seen; launch, publish and show.</p></div></div>
+      <div class="lrow"><div class="y">2033</div><div class="g">癸丑</div><div class="moons" role="img" aria-label="Abundance 3 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></div><div class="t"><b>Water Ox · the full assembly</b><p>Gentle Water above keeps the work flowing, while the Ox completes the great frame of Metal with your Snake and Roosters. Peers gather and competition rises. Hold your position, consolidate and let others come to you.</p></div></div>
+      <div class="lrow peak"><div class="y">2034</div><div class="g">甲寅</div><div class="moons" role="img" aria-label="Abundance 5 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></div><div class="t"><b>Wood Tiger · wealth and the patron</b><p>Direct Wealth stands over the Tiger, your Nobleman, and the year doubles the pillar of your decade. Steady income, ownership and backing from people of standing. The Tiger rubs against your seat, so keep home arrangements clear. The strongest money year in the reading.</p></div></div>
+      <div class="lrow"><div class="y">2035</div><div class="g">乙卯</div><div class="moons" role="img" aria-label="Abundance 4 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></div><div class="t"><b>Wood Rabbit · the field in motion</b><p>Indirect Wealth arrives as a mirror of your own year Rabbit, and both Roosters clash it once more. Large opportunities with movement in them: a deal, a venture or a bold move. Take the opportunity and keep the terms tight.</p></div></div>
+    </div>
+    <div class="ledger-key"><span>Moons · strength of abundance for the year</span></div>
+
+    <div class="ab-keys">
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>How you grow it</h3>
+        <ul>
+          <li>Earn from your eye. The work that pays you best carries your name and your standard.</li>
+          <li>Let talent out before it is perfect. Water releases wealth; holding back blocks it.</li>
+          <li>Say yes to the patron in 2026 and 2034. Your money follows the people who open doors.</li>
+          <li>Follow the horse. New places and work across borders are written into how your money moves.</li>
+        </ul>
+        <div class="foot">Favourable · Water &amp; Wood</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>How you protect it</h3>
+        <ul>
+          <li>Clear written terms with peers and partners, above all in Metal years such as 2029 and 2033.</li>
+          <li>Be careful lending or co-signing while the Rooster clashes your Rabbit.</li>
+          <li>Keep what you build in your own name and structure; Indirect Wealth likes independence.</li>
+          <li>Avoid being buried in obligation. Heavy Earth is the classical weight on a jewel.</li>
+        </ul>
+        <div class="foot">Caution · excess Metal &amp; Earth</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="health">
+  <div class="wrap">
+    <div class="sec-head"><span class="han">养生</span><h2>Health &amp; Vitality</h2><p>In traditional Chinese thought each element governs a part of the body. Read this as a map of tendencies to look after, never as a diagnosis: your doctor's word comes first.</p></div>
+    <div class="ab-intro">
+      <p class="lede">A strong jewel keeps well by staying moist, moving and letting things out.</p>
+      <div>
+        <p>Your chart is dry autumn Metal with Fire in the open and no Water anywhere. Tradition reads this as a constitution with plenty of resilience and a tendency to run dry and tight: strong reserves that are spent quietly, a body that holds tension rather than releasing it, and a need for hydration, rest and breath more than for stimulation.</p>
+        <p>The clash of the Rooster against the Rabbit is Metal cutting Wood, which Chinese medicine links to tension in the neck, shoulders and tendons and to tired eyes. The cure in the chart is Water: sleep, stillness, swimming and warmth that is soft rather than hot.</p>
+      </div>
+    </div>
+    <div class="rituals">
+      <div class="pill rit">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#e-metal" x="10" y="6" width="80" height="80"/></svg>
+        <h3>Metal · lungs</h3>
+        <p>Lungs, skin, the breath and the large intestine. Moist air, steam and care for the chest and skin in dry autumns.</p>
+      </div>
+      <div class="pill rit">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#e-water" x="10" y="6" width="80" height="80"/></svg>
+        <h3>Water · kidneys</h3>
+        <p>Kidneys, the lower back, hormones and deep rest. Your missing element: water through the day and bed before midnight.</p>
+      </div>
+      <div class="pill rit">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#e-wood" x="10" y="6" width="80" height="80"/></svg>
+        <h3>Wood · liver</h3>
+        <p>Liver, eyes, tendons and the flow of feeling. Stretching, green food and breaks from the screen.</p>
+      </div>
+      <div class="pill rit">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#e-fire" x="10" y="6" width="80" height="80"/></svg>
+        <h3>Fire · heart</h3>
+        <p>Heart, circulation and sleep. Fire is present in good measure; keep it steady rather than stoked.</p>
+      </div>
+    </div>
+    <div class="long">
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>Years to rest more</h3>
+        <div class="k">丁未 · 己酉 · 癸丑</div>
+        <p>2027, 2029 and 2033 draw most on you: a year of high Fire and pressure, a year when your own season repeats and clashes, and a year when Metal assembles in full. They are not years to fear, only years to sleep more, keep up with check-ups and let others carry more.</p>
+        <div class="foot">Slow down · stay moist</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>Years of strength</h3>
+        <div class="k">辛亥 · 壬子 · 甲寅运</div>
+        <p>2031 and 2032 bring the Water your body asks for, and the whole <span class="han">甲寅</span> decade from 2030 is kind to your vitality. They are good years to begin a habit of movement, spend time by the sea or take on something that asks for energy.</p>
+        <div class="foot">The water years · the green decade</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="luck">
+  <div class="wrap">
+    <div class="sec-head"><span class="han">大运</span><h2>The Ten-Year Luck Pillars</h2><p>Each decade brings a new pillar into conversation with the natal chart. Yours run forward from your birth month and began when you were three, so each one turns in mid-November of a year ending in zero.</p></div>
+    <div class="arc-box"><svg id="arc" viewBox="0 0 1000 600" role="img" aria-label="Six ten-year luck pillars on an arc: age 3 庚戌, 13 辛亥, 23 壬子, 33 癸丑 (current, 2020 to 2030), 43 甲寅, 53 乙卯"></svg></div>
+    <div class="luck-read">
+      <div>
+        <h3>The present decade<span class="han">癸丑</span></h3>
+        <p>Since 2020 you have walked under <span class="han">癸丑</span>. The stem is <span class="han">癸</span>, gentle Water, the <em>Eating God</em>: talent, pleasure in the work and a softer, more generous way of being seen. It follows the <span class="han">壬子</span> decade, the great washing of your twenties, so for twenty years your chart has had the water it was born without.</p>
+        <p>The Ox below completes the full frame of Metal with your Snake and Roosters <span class="han">巳酉丑</span>, and it is also your <em>Canopy</em> star <span class="han">华盖</span>: solitude, depth and a specialist's seriousness. This is the decade of becoming fully yourself, formidable and a little apart, with peers and rivals measuring themselves against you.</p>
+      </div>
+      <div>
+        <h3>The decade after<span class="han">甲寅</span></h3>
+        <p>From November 2030 the Tiger arrives. It is your <em>Nobleman</em> <span class="han">天乙贵人</span>, and <span class="han">甲</span> above it is Direct Wealth, the steady, owned kind. For the first time in your life Wealth stands at the head of a decade, with a patron beneath it.</p>
+        <p>Together they describe a harvest: what two decades of water have grown is paid for, backed and kept. The Tiger also rubs against your seat <span class="han">寅巳</span>, so home and partnership will want some steering, but the shape of the decade is generous.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="longview">
+  <svg class="deco r" viewBox="0 0 200 100" aria-hidden="true"><use href="#cloud" x="0" y="0" width="200" height="100"/></svg>
+  <div class="wrap">
+    <div class="sec-head"><span class="han">远景</span><h2>The Long View</h2><p>Five, ten, twenty and thirty years ahead. Your chart is one that ripens: the water came first, the wood comes now, and the light arrives in later life.</p></div>
+    <div class="eras">
+
+      <article class="tarot era now">
+        <div class="tab">✦</div>
+        <div class="era-l">
+          <div class="age">Within 5 years · ages 39 – 44</div><div class="yrs">2026 – 2031</div>
+          <div class="lg"><span>丙丁</span></div>
+          <div class="ttl">The sun, then the turn</div>
+        </div>
+        <div class="era-r">
+          <p>Two Fire years open the stretch. 2026 brings the sun to your jewel: a patron, a role that suits you and love that holds. 2027 asks more of you and opens your wealth vault. The middle years are heavier, best spent refining rather than chasing.</p>
+          <p>Then in November 2030 the decade turns to Wood and your Nobleman, and 2031 brings Water and movement. The chart favours a change of ground at the end of this stretch, toward work and a place that are wholly yours.</p>
+          <ul class="ky"><li><b>2026 丙午</b>Recognition, a patron and the sun on the jewel.</li><li><b>2028 戊申</b>A commitment or partnership finds its form.</li><li><b>2031 辛亥</b>Movement, a new market, water and wood together.</li></ul>
+        </div>
+      </article>
+
+      <article class="tarot era">
+        <div class="tab">✦</div>
+        <div class="era-l">
+          <div class="age">Within 10 years · ages 44 – 49</div><div class="yrs">2031 – 2036</div>
+          <div class="lg"><span>甲寅</span></div>
+          <div class="ttl">The washed jewel</div>
+        </div>
+        <div class="era-r">
+          <p>Inside the Wealth decade, 2032 pours <span class="han">壬</span> Water over the jewel: the year the classics would choose for you, when your work is in full flood and widely seen. 2034 doubles your decade pillar, Wealth over your Nobleman, the strongest money year in the reading. By 2036 the sun returns to combine with you, and standing settles around what you have built.</p>
+          <ul class="ky"><li><b>2032 壬子</b>The washing: talent seen and paid.</li><li><b>2034 甲寅</b>Wealth, ownership and a patron.</li><li><b>2036 丙辰</b>A title that fits; devotion renewed.</li></ul>
+        </div>
+      </article>
+
+      <article class="tarot era">
+        <div class="tab">✦</div>
+        <div class="era-l">
+          <div class="age">Within 20 years · ages 49 – 59</div><div class="yrs">2036 – 2046</div>
+          <div class="lg"><span>乙卯</span></div>
+          <div class="ttl">The field of your own</div>
+        </div>
+        <div class="era-r">
+          <p>The Wealth decade ripens and in November 2040 hands over to <span class="han">乙卯</span>, a mirror of your own year Rabbit. Indirect Wealth stands at the head of the decade: ventures, ownership and the entrepreneur's freedom. The Roosters still clash it, so this is wealth with motion in it, but for the first time your lone Rabbit is surrounded by forest.</p>
+          <ul class="ky"><li><b>2038 戊午</b>Your Nobleman returns with backing and honour.</li><li><b>2042 壬戌</b>Water over the decade: a creative second spring.</li><li><b>2044 甲子</b>Wealth and the Literary Star together.</li></ul>
+        </div>
+      </article>
+
+      <article class="tarot era">
+        <div class="tab">✦</div>
+        <div class="era-l">
+          <div class="age">Within 30 years · ages 59 – 69</div><div class="yrs">2046 – 2056</div>
+          <div class="lg"><span>丙辰</span></div>
+          <div class="ttl">The sun over the jewel</div>
+        </div>
+        <div class="era-r">
+          <p>In November 2050 something your chart has held privately all your life arrives in the open. <span class="han">丙</span>, the sun hidden in your seat, stands at the head of a whole decade and combines with you, while the Dragon embraces your Roosters. The Officer in later life is honour: a respected name, a settled place and the authority of someone whose standard others now follow.</p>
+          <ul class="ky"><li><b>2048 戊辰</b>Resource and rest: a time to teach.</li><li><b>2050 丙辰运</b>The decade of honour begins.</li><li><b>2054 甲戌</b>Wealth returns inside a year of standing.</li></ul>
+        </div>
+      </article>
+
+    </div>
+    <p class="stars-note">The classical verse for your Day Master says it plainly: it fears earth heaped upon it and delights in abundant water. Your life has been arranged to bring the water.</p>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="years">
+  <div class="wrap">
+    <div class="sec-head"><span class="han">流年</span><h2>The Years Ahead</h2></div>
+    <div class="years">
+      <article class="tarot">
+        <div class="tab">XXVI</div>
+        <div class="yr">2026</div><div class="yg">丙午</div>
+        <svg class="emb"><use href="#e-fire"/></svg>
+        <p>The sun on the jewel. Your <em>Direct Officer</em> stands open in the sky and combines with you, and the Horse below is both your Nobleman and your Peach Blossom. Recognition, a patron and love that warms rather than tests. A year to be seen.</p>
+        <div class="foot">Fire Horse<i>radiance</i></div>
+      </article>
+      <article class="tarot">
+        <div class="tab">XXVII</div>
+        <div class="yr">2027</div><div class="yg">丁未</div>
+        <svg class="emb"><use href="#e-fire"/></svg>
+        <p><em>Seven Killings</em>, the demanding flame, over the Goat, the vault of your Wealth. Pressure and payoff in the same year: a harder role or a high-stakes project that builds lasting value. Keep your pace kind; this Fire runs hot.</p>
+        <div class="foot">Fire Goat<i>proving</i></div>
+      </article>
+      <article class="tarot">
+        <div class="tab">XXVIII</div>
+        <div class="yr">2028</div><div class="yg">戊申</div>
+        <svg class="emb"><use href="#e-earth"/></svg>
+        <p><em>Direct Resource</em> brings mentors, study and solid backing. The Monkey embraces your Snake and together they make Water, the element you lack: an idea, a partnership or a promise takes shape. A year for foundations and formal agreements.</p>
+        <div class="foot">Earth Monkey<i>forming</i></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="road">
+  <div class="wrap">
+    <div class="sec-head"><span class="han">来时路</span><h2>The Road So Far</h2><p>From your first autumn to this year, read through the pillars that governed each stretch of your life. A chart describes the weather of a season rather than its events, so these pages are an invitation: you will know best where the weather matched your life.</p></div>
+    <div class="eras">
+
+      <article class="tarot era">
+        <div class="tab">✦</div>
+        <div class="era-l">
+          <div class="age">Birth to 13</div><div class="yrs">1987 – 2000</div>
+          <div class="lg"><span>庚戌</span></div>
+          <div class="ttl">The guarded jewel</div>
+        </div>
+        <div class="era-r">
+          <p>Your first luck pillar began at three and set <em>Rob Wealth</em>, the strong sibling metal, over a Dog of Earth that holds a hidden ember. A childhood under it is protected and full of strong presences: older people, peers or siblings who took up a lot of room, and a sense of being kept safe and kept close.</p>
+          <p>The Dog embraced your year Rabbit toward Fire, so even early, effort was noticed and rewarded. Earth was plentiful and Water absent, which suggests a careful, observant child who watched far more than she said.</p>
+          <ul class="ky"><li><b>1993 癸酉</b>Water arrives for a year: a bright, expressive spell.</li><li><b>1996 丙子</b>The sun combines with you over your Literary Star: a gifted, noticed year.</li><li><b>1999 己卯</b>Your year Rabbit returns under clash: change in the family ground.</li></ul>
+        </div>
+      </article>
+
+      <article class="tarot era">
+        <div class="tab">✦</div>
+        <div class="era-l">
+          <div class="age">Ages 13 – 23</div><div class="yrs">2000 – 2010</div>
+          <div class="lg"><span>辛亥</span></div>
+          <div class="ttl">The first river</div>
+        </div>
+        <div class="era-r">
+          <p>Your own pillar stem, the Friend, stood over the Pig, and the Pig carried Water into your life for the first time: <span class="han">壬</span>, the voice and the wit, and the seed of Wood. Teenage years under this light bring opinion, style and a first real sense of what you are good at.</p>
+          <p>The Pig clashed your Snake and set your travelling horse running. These were years of motion: changes of school, city or home, and a growing independence from the ground you began on.</p>
+          <ul class="ky"><li><b>2001 辛巳</b>Your own seat doubled: a year of defining yourself.</li><li><b>2004 甲申</b>Wealth over a Monkey that embraces your seat: a first taste of earning or independence.</li><li><b>2006 丙戌</b>The sun combines with you: recognition and first serious love.</li><li><b>2008 戊子</b>Resource over the Literary Star: study, credentials and a direction chosen.</li></ul>
+        </div>
+      </article>
+
+      <article class="tarot era">
+        <div class="tab">✦</div>
+        <div class="era-l">
+          <div class="age">Ages 23 – 33</div><div class="yrs">2010 – 2020</div>
+          <div class="lg"><span>壬子</span></div>
+          <div class="ttl">The great washing</div>
+        </div>
+        <div class="era-r">
+          <p>The decade your chart was waiting for. <span class="han">壬</span> Water, the exact element the classics prescribe for an autumn jewel, stood at its head, over the Rat that is your Literary Star and your Peach Blossom. These were years of talent showing, of being seen and of a style and voice becoming unmistakably yours.</p>
+          <p>The Rat punished your Rabbit and broke your Roosters <span class="han">子卯刑 · 子酉破</span>, so the brilliance came with restlessness and some upheaval in money and roots. The washing is not always gentle; it is what makes a stone shine.</p>
+          <ul class="ky"><li><b>2010 庚寅</b>The decade opens over your Nobleman: help and a new direction.</li><li><b>2014 甲午</b>Wealth over the Horse, your patron and Peach Blossom: a warm, rising year.</li><li><b>2016 丙申</b>The sun combines with you as the Monkey embraces your seat: commitment and partnership.</li><li><b>2019 己亥</b>The Pig clashes your seat: a move or a turn in the road.</li></ul>
+        </div>
+      </article>
+
+      <article class="tarot era now">
+        <div class="tab">✦</div>
+        <div class="era-l">
+          <div class="age">Ages 33 – now</div><div class="yrs">2020 – 2026</div>
+          <div class="lg"><span>癸丑</span></div>
+          <div class="ttl">Becoming fully yourself</div>
+        </div>
+        <div class="era-r">
+          <p>In 2020 the Water softened from a river to rain. The <em>Eating God</em> above has made the work more pleasurable and more your own, while the Ox completed your great frame of Metal: the decade in which you become most completely yourself, formidable, refined and a little set apart.</p>
+          <p>The Canopy star in this decade favours depth over breadth, the specialist over the generalist and solitude chosen rather than imposed. It is preparation for the Wood that follows.</p>
+          <ul class="ky"><li><b>2020 庚子</b>The decade turns under the Literary Star: a new kind of work.</li><li><b>2022 壬寅</b>Water over your Nobleman: a bright, supported year.</li><li><b>2024 甲辰</b>Direct Wealth over a Dragon that embraces your Roosters: income and consolidation.</li><li><b>2025 乙巳</b>Your seat repeats: decisions about where and with whom you live.</li><li><b>2026 丙午</b>The sun on the jewel: recognition, patron and love.</li></ul>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="decade">
+  <div class="wrap">
+    <div class="sec-head"><span class="han">十年大势</span><h2>The Decade Ahead</h2><p>Read as a whole, the next ten years open in sunlight, pass through a heavier middle and end in the water and wood your chart has always asked for.</p></div>
+    <div class="phases">
+      <article class="tarot"><div class="tab">✦</div><div class="yr">2026–27</div><div class="ph">Sun &amp; vault</div><svg class="emb" aria-hidden="true"><use href="#e-fire"/></svg><p>The Officer combines with you and your patron arrives; then a demanding year opens your wealth vault. The best window in years to be seen and to take on rank.</p><div class="foot">丙午 · 丁未</div></article>
+      <article class="tarot"><div class="tab">✦</div><div class="yr">2028–29</div><div class="ph">Form &amp; refine</div><svg class="emb" aria-hidden="true"><use href="#e-metal"/></svg><p>Backing and a partnership take shape, then your own season repeats. Protect money, keep agreements in writing and refine rather than expand.</p><div class="foot">戊申 · 己酉</div></article>
+      <article class="tarot"><div class="tab">✦</div><div class="yr">2030–31</div><div class="ph">Hinge &amp; road</div><svg class="emb" aria-hidden="true"><use href="#e-earth"/></svg><p>The decade turns to Wealth and your Nobleman. Then the Pig brings Water and movement: a new market, a new city or work that travels.</p><div class="foot">庚戌 · 辛亥</div></article>
+      <article class="tarot peak"><div class="tab">✦</div><div class="yr">2032–33</div><div class="ph">The washing</div><svg class="emb" aria-hidden="true"><use href="#e-water"/></svg><p>Water pours over the jewel: your talent in full flood and widely seen. Then the Metal frame assembles, a year to hold your position.</p><div class="foot">壬子 · 癸丑</div></article>
+      <article class="tarot peak"><div class="tab">✦</div><div class="yr">2034–35</div><div class="ph">Field &amp; harvest</div><svg class="emb" aria-hidden="true"><use href="#e-wood"/></svg><p>Wealth over your Nobleman, then a venture with motion in it. Ownership, backing and the open field.</p><div class="foot">甲寅 · 乙卯</div></article>
+    </div>
+    <div class="long">
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>Your calling</h3>
+        <div class="k">辛金 · 杀印相生 · 将星</div>
+        <p>Your chart describes a connoisseur with a commander's composure. Xin Metal gives you the eye, Killings feeding Resource gives you authority earned under pressure, and the General's star gives you a room that settles when you speak. In the Western sky, Venus at home in Libra rules both your Sun and your Rising, a Capricorn Midheaven builds a lasting name and a ninth-house Moon widens your reach across cultures.</p>
+        <p>The likeliest arc runs from trusted specialist to the person whose taste sets the standard: a name, a practice or a body of work that carries your signature. Water years bring the work; Wood decades bring the reward.</p>
+        <div class="foot">The eye that sets the standard</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>How wealth finds you</h3>
+        <div class="k">伤官生财 · 贵人 · 财运</div>
+        <p><em>Through expression more than accumulation.</em> Your wealth follows what you show, make and say. <em>Through patrons.</em> Your Noblemen arrive from outside, in 2026, through the Tiger decade and in 2034.</p>
+        <p><em>First released, then kept.</em> Two decades of Water brought your gifts out; from 2030 two decades of Wood bring the money in. The decisive harvest falls in 2032 and 2034, when Water and Wealth stand in the sky.</p>
+        <div class="foot">Harvest in 2032 and 2034</div>
+      </article>
+    </div>
+    <div class="long" style="grid-template-columns:1fr">
+      <article class="tarot">
+        <div class="tab">♡</div>
+        <h3>What keeps the jewel bright</h3>
+        <div class="k">壬水淘洗</div>
+        <p style="max-width:780px;margin-left:auto;margin-right:auto">The only things that could dull the decade are holding too much, being buried in obligation and measuring yourself against peers. All three answer to the same remedy: Water. Expression, rest, movement and the courage to show unfinished work keep a strong jewel luminous.</p>
+        <div class="foot">Bazi offers the shape of timing, not a guarantee · this shape ripens</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="month2027">
+  <div class="wrap">
+    <div class="sec-head"><span class="han">丁未年 · 月运</span><h2>2027, Month by Month</h2><p>A field guide to the Fire Goat year, one card for each solar month. The moons show how strongly each month favours you; the foot of each card names what it is best used for.</p></div>
+    <div class="months">
+      <article class="tarot"><div class="tab">I</div><div class="mhead"><span class="mname">January</span><span class="mgz">辛丑</span></div><div class="mdates">Jan 5 – Feb 3</div><div class="moons" role="img" aria-label="2 of 5"><i class="f"></i><i class="f"></i><i></i><i></i><i></i></div><div class="mtheme">The quiet workshop</div><p>The last month of the Fire Horse year brings your own Friend stem over the Ox, completing your great frame of Metal. Peers press close and the air is still. The Ox is your Canopy star, so solitary, exacting work goes beautifully.</p><div class="foot">Editing · solo work · rest</div></article>
+      <article class="tarot peak"><div class="tab">II</div><div class="mhead"><span class="mname">February</span><span class="mgz">壬寅</span></div><div class="mdates">Feb 3 – Mar 5</div><div class="moons" role="img" aria-label="5 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></div><div class="mtheme">Washed and seen</div><p><span class="han">壬</span> Water, the washing your chart prescribes, over the Tiger, your Nobleman, which holds Direct Wealth inside it. Talent and patronage in the same month. Launch, pitch and ask for the introduction.</p><div class="foot">Launches · pitches · patrons</div></article>
+      <article class="tarot"><div class="tab">III</div><div class="mhead"><span class="mname">March</span><span class="mgz">癸卯</span></div><div class="mdates">Mar 5 – Apr 4</div><div class="moons" role="img" aria-label="4 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></div><div class="mtheme">Rain on the field</div><p>Gentle Water over a Rabbit of Indirect Wealth: talent turning into money. Both Roosters clash the Rabbit, so offers move fast and change shape. Say yes to the good ones and read the terms twice.</p><div class="foot">Selling · deals · creative work</div></article>
+      <article class="tarot"><div class="tab">IV</div><div class="mhead"><span class="mname">April</span><span class="mgz">甲辰</span></div><div class="mdates">Apr 4 – May 5</div><div class="moons" role="img" aria-label="4 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></div><div class="mtheme">Steady income</div><p>Direct Wealth stands open over the Dragon, which embraces your Roosters. Money that is earned, contracted and kept. A good month for pricing, invoices and the dull paperwork that protects a good year.</p><div class="foot">Contracts · pricing · income</div></article>
+      <article class="tarot"><div class="tab">V</div><div class="mhead"><span class="mname">May</span><span class="mgz">乙巳</span></div><div class="mdates">May 5 – Jun 5</div><div class="moons" role="img" aria-label="3 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></div><div class="mtheme">The offer that tests</div><p>Indirect Wealth clashes your Day Master <span class="han">乙辛冲</span> as the Snake doubles your own seat. An opportunity that asks you to stretch or move. Travel suits it; so does a long pause before signing.</p><div class="foot">Travel · negotiation · patience</div></article>
+      <article class="tarot peak"><div class="tab">VI</div><div class="mhead"><span class="mname">June</span><span class="mgz">丙午</span></div><div class="mdates">Jun 5 – Jul 6</div><div class="moons" role="img" aria-label="5 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></div><div class="mtheme">The sun and the heart</div><p>Your Officer combines with you over the Horse, your Nobleman and Peach Blossom. The strongest month of 2027 for love, recognition and backing from people of standing. Be visible and let yourself be chosen.</p><div class="foot">Romance · recognition · patrons</div></article>
+      <article class="tarot"><div class="tab">VII</div><div class="mhead"><span class="mname">July</span><span class="mgz">丁未</span></div><div class="mdates">Jul 7 – Aug 7</div><div class="moons" role="img" aria-label="4 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></div><div class="mtheme">The vault and the furnace</div><p>The month mirrors the year: Seven Killings over your wealth vault. High heat and high stakes. A demanding project pays well, provided you guard your rest and do not let the pressure set your pace.</p><div class="foot">Big projects · investment · boundaries</div></article>
+      <article class="tarot"><div class="tab">VIII</div><div class="mhead"><span class="mname">August</span><span class="mgz">戊申</span></div><div class="mdates">Aug 7 – Sep 7</div><div class="moons" role="img" aria-label="3 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></div><div class="mtheme">The seat embraced</div><p>Direct Resource over the Monkey, which embraces your Snake into Water. Mentors, study and a partner's support. Ideas that have been forming find words. Good for formal agreements and for learning.</p><div class="foot">Mentors · study · agreements</div></article>
+      <article class="tarot"><div class="tab">IX</div><div class="mhead"><span class="mname">September</span><span class="mgz">己酉</span></div><div class="mdates">Sep 7 – Oct 8</div><div class="moons" role="img" aria-label="2 of 5"><i class="f"></i><i class="f"></i><i></i><i></i><i></i></div><div class="mtheme">Your own season</div><p>Your birthday month repeats your month pillar and a third Rooster clashes your Rabbit. Everything you already are, turned up. Refine, edit and celebrate quietly; keep money conversations short.</p><div class="foot">Refinement · birthday · boundaries</div></article>
+      <article class="tarot"><div class="tab">X</div><div class="mhead"><span class="mname">October</span><span class="mgz">庚戌</span></div><div class="mdates">Oct 8 – Nov 7</div><div class="moons" role="img" aria-label="3 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></div><div class="mtheme">Rivals and allies</div><p>Rob Wealth over the Dog, which embraces your Rabbit toward Fire. Competition sharpens and so does your standing. Collaborate with care, credit clearly and let the work speak.</p><div class="foot">Collaboration · reputation</div></article>
+      <article class="tarot"><div class="tab">XI</div><div class="mhead"><span class="mname">November</span><span class="mgz">辛亥</span></div><div class="mdates">Nov 7 – Dec 7</div><div class="moons" role="img" aria-label="4 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></div><div class="mtheme">The river and the road</div><p>The Pig brings Water and the seed of Wood, and it clashes your seat to set the travelling horse running. Travel, a new market or a move goes well. Ideas flow and money follows them.</p><div class="foot">Travel · writing · new ground</div></article>
+      <article class="tarot"><div class="tab">XII</div><div class="mhead"><span class="mname">December</span><span class="mgz">壬子</span></div><div class="mdates">Dec 7 – Jan 5</div><div class="moons" role="img" aria-label="4 of 5"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></div><div class="mtheme">The full river</div><p><span class="han">壬</span> Water over the Rat, your Literary Star. Expressive, generous and productive: a fine close to the year and a preview of 2032. Make, show and plan the next chapter.</p><div class="foot">Creating · showing · 2028 plans</div></article>
+    </div>
+    <p class="small" style="text-align:center;margin-top:22px">Bazi months begin at the solar terms, so each runs from early in one calendar month to early in the next. Dates are for Eastern time and may shift by a day.</p>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="natal">
+  <svg class="deco l" viewBox="0 0 200 100" aria-hidden="true"><use href="#cloud" x="0" y="0" width="200" height="100"/></svg>
+  <div class="wrap">
+    <div class="sec-head"><span class="han">星盘</span><h2>The Western Sky</h2><p>The same evening read through Western astrology: the positions of the planets over Toronto at 8:00 pm on 29 September 1987.</p></div>
+    <div class="natal-top">
+      <svg id="wheel" viewBox="-260 -260 520 520" role="img" aria-label="Your natal chart wheel: Sun and Venus in Libra, Moon and Neptune in Capricorn, Mercury and Pluto in Scorpio, Mars in Virgo, Jupiter in Aries, Saturn and Uranus in Sagittarius, Taurus rising"></svg>
+      <div class="big3">
+        <article class="tarot"><div class="b3h"><span class="gl">☉︎</span><h3>Sun in Libra</h3><span class="deg">6°</span></div><p>The sign of the scales, born a week after the equinox when day and night stand equal. You seek balance, beauty and fairness, and you see both sides before you choose one. Your Sun sits in the sixth house of daily craft, so your sense of self is made in the work of your hands.</p></article>
+        <article class="tarot"><div class="b3h"><span class="gl">☽︎</span><h3>Moon in Capricorn</h3><span class="deg">0°</span></div><p>Composed, capable and private, at ease when things are built to last. Your Moon had crossed into Capricorn only an hour before, and it rides with Neptune, which lends a dreaming, artistic tide beneath the reserve. Born half a day before the first quarter moon, you carry the phase of decision.</p></article>
+        <article class="tarot"><div class="b3h"><span class="gl">↑</span><h3>Taurus Rising</h3><span class="deg">3°</span></div><p>The world meets you as calm, grounded and quietly sensual, someone with taste who is in no hurry. Venus rules your Rising as well as your Sun, so she governs your whole chart, and Jupiter has only just risen above the horizon, a fortunate presence close at hand.</p></article>
+      </div>
+    </div>
+
+    <div class="talismans">
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><circle cx="60" cy="48" r="20"/><path d="M60 68v34M46 88h28"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><use href="#star4" x="54" y="42" width="12" height="12"/></svg>
+        <div class="k">6th house · chart ruler</div>
+        <h3>Venus at home</h3>
+        <p>Venus in Libra is in her own sign and she rules your chart. Beauty, proportion and harmony are not decoration for you but how you work. She sits beside your Sun in the house of craft and service, so your daily work is where your taste lives.</p>
+        <div class="src">Venus · 16° Libra</div>
+      </article>
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><path d="M30 76c10-30 50-30 60 0"/><path d="M40 76c8-18 32-18 40 0"/><path d="M60 40V16"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><g class="lnf"><circle cx="50" cy="60" r="3"/><circle cx="70" cy="60" r="3"/></g></svg>
+        <div class="k">7th house</div>
+        <h3>Mercury and Pluto in Scorpio</h3>
+        <p>The mind and the deep together in your house of partnership. You think best in close, honest conversation and see straight through to what people mean. Your significant others bring transformation, and you bring them truth.</p>
+        <div class="src">Mercury 1° · Pluto 8° Scorpio</div>
+      </article>
+      <article class="pill tal">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><g class="ln"><path d="M10 80h100"/><circle cx="60" cy="58" r="18"/><path d="M60 22v10M28 34l7 7M92 34l-7 7M18 60h10M92 60h10"/><circle cx="60" cy="60" r="46" stroke-dasharray="1 4"/></g><use href="#star4" x="53" y="51" width="14" height="14"/></svg>
+        <div class="k">12th house</div>
+        <h3>Jupiter just risen</h3>
+        <p>Jupiter in Aries has just risen above your Ascendant, in the twelfth house of hidden things, retrograde. Your luck works quietly at first and grows more visible with time; protection arrives from unseen places, and your courage is often greater than you show.</p>
+        <div class="src">Jupiter · 27° Aries ℞</div>
+      </article>
+    </div>
+
+    <div class="long">
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>The week of equal light</h3>
+        <div class="k">Qiufen · first quarter · Capricorn Midheaven</div>
+        <p>You were born six days after Qiufen, the autumn equinox, when the year holds day and night in balance and the waters begin to recede. In Bazi it is the heart of the Rooster month, Metal at its height; in the Western sky it is Libra, the sign of the scales. Both traditions place you at the poised centre of autumn.</p>
+        <p>Saturn and Uranus in Sagittarius in your eighth house give you an unconventional relationship to shared resources and to risk, and your Capricorn Midheaven builds a reputation on mastery and the long view.</p>
+        <div class="foot">Born in the week of the equinox</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">☯</div>
+        <h3>Where East meets West</h3>
+        <div class="k">八字 · 星盘</div>
+        <p>Both traditions find water scarce. Bazi finds none at all among your eight characters; the Western sky places only two of your twelve points in Water signs, and both sit in your house of partnership. In both systems, your water arrives through others: through conversation, love and the people who draw you out.</p>
+        <p>Your jewel Day Master and a Venus-ruled chart speak the same language of refinement and beauty. Your Officer sun hidden in your seat echoes a Capricorn Midheaven, authority held quietly and earned over time.</p>
+        <div class="foot">Water 2 of 12 · Bazi Water 0</div>
+      </article>
+    </div>
+
+    <div class="ptable-box"><table class="ptable">
+      <thead><tr><th></th><th>Point</th><th>Sign</th><th>Degree</th><th>House</th><th>Speaks to</th></tr></thead>
+      <tbody><tr><td class="g">☉︎</td><td>Sun</td><td>Libra</td><td>6°18′</td><td>6th</td><td class="m">the self</td></tr><tr><td class="g">☽︎</td><td>Moon</td><td>Capricorn</td><td>0°30′</td><td>9th</td><td class="m">the heart</td></tr><tr><td class="g">☿︎</td><td>Mercury</td><td>Scorpio</td><td>1°29′</td><td>7th</td><td class="m">the mind</td></tr><tr><td class="g">♀︎</td><td>Venus</td><td>Libra</td><td>16°28′</td><td>6th</td><td class="m">love and taste</td></tr><tr><td class="g">♂︎</td><td>Mars</td><td>Virgo</td><td>24°21′</td><td>5th</td><td class="m">drive and desire</td></tr><tr><td class="g">♃︎</td><td>Jupiter ℞</td><td>Aries</td><td>27°05′</td><td>12th</td><td class="m">growth and luck</td></tr><tr><td class="g">♄︎</td><td>Saturn</td><td>Sagittarius</td><td>15°54′</td><td>8th</td><td class="m">structure and time</td></tr><tr><td class="g">♅︎</td><td>Uranus</td><td>Sagittarius</td><td>23°04′</td><td>8th</td><td class="m">change</td></tr><tr><td class="g">♆︎</td><td>Neptune</td><td>Capricorn</td><td>5°16′</td><td>9th</td><td class="m">vision</td></tr><tr><td class="g">♇︎</td><td>Pluto</td><td>Scorpio</td><td>8°35′</td><td>7th</td><td class="m">transformation</td></tr><tr><td class="g">↑</td><td>Ascendant</td><td>Taurus</td><td>3°26′</td><td>1st</td><td class="m">how the world meets you</td></tr><tr><td class="g">MC</td><td>Midheaven</td><td>Capricorn</td><td>17°22′</td><td>—</td><td class="m">public calling</td></tr></tbody>
+    </table></div>
+    <p class="small">Tropical zodiac, whole-sign houses from a Taurus Ascendant; Midheaven by quadrant calculation. The Rising sign, houses and Moon sign depend on the exact time: before about 7 pm the Moon would still be in Sagittarius, and later in the evening the Ascendant moves into late Taurus and then Gemini.</p>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="rituals">
+  <div class="wrap">
+    <div class="sec-head"><span class="han">补运</span><h2>Washing the Jewel</h2><p>Traditional remedies bring in what a chart is missing. For you that means Water first, then Wood: flow, depth and growth.</p></div>
+    <div class="rituals">
+      <div class="pill rit">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><g class="ln"><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="38" stroke-dasharray="1 4"/><path d="M50 20a30 30 0 0 1 0 60z"/></g><use href="#star4" x="80" y="8" width="12" height="12"/></svg>
+        <h3>Colours</h3>
+        <div class="sw"><span style="background:#0d2233"></span><span style="background:#22585c"></span><span style="background:#3d6b52"></span><span style="background:#8fb8c2"></span></div>
+        <p>Midnight blue, deep sea teal, pine and rain grey-blue. Go lighter on white, gold, beige and ochre, the Metal and Earth you already carry.</p>
+      </div>
+      <div class="pill rit">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><g class="ln"><circle cx="50" cy="50" r="32"/><path d="M50 26l6 24-6 24-6-24z"/><path d="M50 8v8M50 84v8M8 50h8M84 50h8"/></g>
+          <text x="50" y="6" text-anchor="middle" font-family="Jost" font-size="8" fill="#eef4f1">N</text><text x="97" y="53" font-family="Jost" font-size="8" fill="#eef4f1">E</text><text x="50" y="100" text-anchor="middle" font-family="Jost" font-size="7" fill="#5d7672">S</text><text x="0" y="53" font-family="Jost" font-size="7" fill="#5d7672">W</text></svg>
+        <h3>Directions</h3>
+        <p>North for flow and expression, East for growth and wealth. A desk facing north or east; a home with a view of water or trees.</p>
+      </div>
+      <div class="pill rit">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><g class="ln"><path d="M62 18a28 28 0 1 0 0 48 24 24 0 1 1 0-48z"/><path d="M14 78c8-5 16 5 24 0s16 5 24 0 16 5 24 0"/></g><use href="#star4" x="76" y="6" width="12" height="12"/></svg>
+        <h3>Season &amp; hour</h3>
+        <p>Winter is your strongest season, then spring. The late night hours carry Water; dawn carries Wood. Your best thinking may come after dark.</p>
+      </div>
+      <div class="pill rit">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#e-water" x="10" y="6" width="80" height="80"/></svg>
+        <h3>Keep near</h3>
+        <p>The sea, rain, a pool, ink and paper, living plants and books. Friends who draw you into conversation are Water too.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="divider" viewBox="0 0 260 44" aria-hidden="true"><path d="M0 26h70M190 26h70" class="ln" opacity=".6"/><use href="#cloud" x="66" y="8" width="56" height="28"/><g transform="translate(194 8) scale(-1 1)"><use href="#cloud" x="0" y="0" width="56" height="28"/></g><circle cx="130" cy="22" r="9" fill="url(#sunR)"/></svg>
+
+<section id="friendship">
+  <svg class="deco r" viewBox="0 0 200 100" aria-hidden="true"><use href="#cloud" x="0" y="0" width="200" height="100"/></svg>
+  <div class="wrap">
+    <div class="sec-head"><span class="han">知己</span><h2>Adrienne &amp; Jane</h2><p>A reading of the friendship, the jewel and the blade, born nine months apart in the same year: Jane in the deep of winter, you at the height of autumn.</p></div>
+    <div class="duo">
+      <div class="who">
+        <div class="nm">Adrienne</div>
+        <div class="dm">辛</div>
+        <span class="cap">Yin Metal · the jewel</span>
+        <div class="row"><span>丁酉<small>Hour</small></span><span>辛巳<small>Day</small></span><span>己酉<small>Month</small></span><span>丁卯<small>Year</small></span></div>
+      </div>
+      <svg class="forge" viewBox="0 0 200 220" role="img" aria-label="A sword with a jewel set at its guard, standing in water">
+        <circle cx="100" cy="92" r="58" fill="url(#sunG)" opacity=".8"/>
+        <g class="ln">
+          <circle cx="100" cy="14" r="6"/>
+          <path d="M95 20h10v28H95z"/>
+          <path d="M60 52h80"/><path d="M60 52c-9 0-12-9-5-12M140 52c9 0 12-9 5-12"/>
+          <path d="M90 60h20l-2 112-8 18-8-18z"/>
+          <path d="M100 64v124"/>
+          <circle cx="100" cy="92" r="64" stroke-dasharray="1 4"/>
+          <path d="M36 196c11-7 22 7 32 0s22 7 32 0 22 7 32 0 22 7 32 0"/>
+        </g>
+        <use href="#gem" x="82" y="36" width="36" height="33"/>
+        <use href="#star4" x="22" y="40" width="14" height="14"/><use href="#star4" x="164" y="50" width="11" height="11"/>
+        <text x="100" y="216" text-anchor="middle" font-family="Noto Serif SC, serif" font-size="15" letter-spacing="4" fill="#c5d3cf">巳申合水</text>
+      </svg>
+      <div class="who">
+        <div class="nm">Jane</div>
+        <div class="dm">庚</div>
+        <span class="cap">Yang Metal · the blade</span>
+        <div class="row"><span>甲申<small>Hour</small></span><span>庚申<small>Day</small></span><span>辛丑<small>Month</small></span><span>丙寅<small>Year</small></span></div>
+      </div>
+    </div>
+
+    <div class="fs-grid">
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>The blade and the jewel</h3>
+        <div class="k">庚 · 辛</div>
+        <p>Jane's Day Master is <span class="han">庚</span>, Yang Metal: the blade, the unworked ore. Yours is <span class="han">辛</span>, Yin Metal: the jewel. You are made of the same element, one turned toward strength and one toward refinement. In each other's charts each of you is <em>Rob Wealth</em>, the sister star of the same metal in its other form: the friend who understands you completely and meets the world differently.</p>
+        <p>The classics pair them naturally. The sword guards the jewel; the jewel is what gives the sword something worth guarding.</p>
+        <div class="foot">Same metal · two natures</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>What each of you carries</h3>
+        <div class="k">丁丁 · 壬 甲甲</div>
+        <p>You carry what Jane's chart asks for first: Fire. Your two <span class="han">丁</span> flames are Jane's Direct Officer, the steady warmth that tempers a winter blade into an instrument. Jane carries exactly what yours lacks: the <span class="han">壬</span> Water hidden in her two Monkeys, the washing your jewel was born without, and two <span class="han">甲</span> trees, your Direct Wealth.</p>
+        <p>And Jane's year stem <span class="han">丙</span>, the sun, combines with you. By element, Jane is someone who sees your best and holds you to it.</p>
+        <div class="foot">Fire for the blade · water and wood for the jewel</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>The Snake and the Monkeys</h3>
+        <div class="k">巳申合水 · 寅巳申</div>
+        <p>Your Snake, your own seat, embraces both of Jane's Monkeys, and the pair transform into Water: the element both of your charts are short of. Between you, something flows that neither has alone: ideas, talk, laughter and the kind of conversation that changes the course of a week.</p>
+        <p>The same Snake also completes a classical triangle of friction with Jane's Tiger and Monkeys <span class="han">寅巳申</span>, a tension about pace and who leads. Its cure is in the combine itself: keep talking.</p>
+        <div class="foot">Combination · 六合</div>
+      </article>
+      <article class="tarot">
+        <div class="tab">✦</div>
+        <h3>The same clock</h3>
+        <div class="k">Western synastry</div>
+        <p>Your Venus sits in an exact trine to Jane's Moon, within a few minutes of arc, the classic signature of affection, ease and feeling at home with each other. Your Mars trines Jane's Sun and Mercury in earth: a practical alliance in which work gets done.</p>
+        <p>Your North Node falls exactly on Jane's Mars, so Jane's drive points toward the direction your life asks you to grow. And your Saturns sit within a degree of one another: you keep the same life clock, and your great turning points arrive together.</p>
+        <div class="foot">Venus △ Moon · Mars △ Sun · Node ☌ Mars</div>
+      </article>
+      <article class="tarot wide">
+        <div class="tab">♡</div>
+        <h3>Fire and water, one blade</h3>
+        <div class="k">淬火</div>
+        <p>A sword is made by two things: the fire that heats it and the water that quenches it. Jane was born in deep winter and looks first to Fire; you were born in high autumn and look first to Water. You bring Jane the flame, Jane brings you the river, and between you the metal you share keeps being made into something finer.</p>
+        <div class="foot">For Adrienne, with love from Jane</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="verse">
+  <div class="wrap">
+    <svg width="90" height="40" viewBox="0 0 90 40" aria-hidden="true"><g class="ln"><path d="M40 6a14 14 0 0 1 0 28a17 17 0 0 0 0-28z"/></g><use href="#star4" x="62" y="4" width="10" height="10"/></svg>
+    <div class="zh">辛金软弱　温润而清<br>畏土之叠　乐水之盈<br>能扶社稷　能救生灵<br>热则喜母　寒则喜丁</div>
+    <div class="en">Xin Metal is soft, warm, lustrous and clear. It fears earth heaped upon it and delights in abundant water.<br>It can uphold a state and rescue living things. In heat it loves its mother; in cold it loves the flame.</div>
+    <div class="cap" style="margin-top:18px;color:var(--gold-dim)">Di Tian Sui · on the yin Metal</div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Pillars calculated for 29 September 1987 in Toronto (43.65°N, 79.38°W). Your birth time is known only as evening, so this reading uses 8:00 pm EDT, true solar time of about 6:52 pm, which falls in the Rooster hour 丁酉. A birth after about 8:10 pm would give the Dog hour 戊戌 and change the hour pillar, the Rising sign and the houses; everything drawn from your year, month and day stays the same. You were born six days after the autumn equinox in the Rooster month 己酉. Your luck pillars run forward and turn in mid-November of each year ending in zero; exact timing varies a little between schools.</p>
+    <p>Bazi is a traditional Chinese art of reflection. This reading is offered as a gift and a mirror.</p>
+  </div>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+
+  /* rays around flames */
+  function rays(g,cx,cy,r1,r2,n,skip){
+    for(var i=0;i<n;i++){var a=i/n*Math.PI*2;if(skip&&skip(a))continue;
+      var long=i%2===0;var rr=long?r2:r2-(r2-r1)*.5;
+      el('line',{x1:cx+Math.cos(a)*r1,y1:cy+Math.sin(a)*r1,x2:cx+Math.cos(a)*rr,y2:cy+Math.sin(a)*rr,'stroke-dasharray':long?'':'1.5 3'},g);}
+  }
+  rays(document.getElementById('dmRays'),100,120,64,88,36,function(a){return (a>3.7&&a<5.72)||(a>1.25&&a<1.9)});
+  rays(document.getElementById('heroRays'),0,-30,146,166,64,function(a){return !((a>3.55&&a<4.5)||(a>4.92&&a<5.87))});
+
+  /* element orbit */
+  var o=document.getElementById('orbit');
+  var E=[{n:'Wood',h:'木',p:8,f:1},{n:'Fire',h:'火',p:23},{n:'Earth',h:'土',p:11},{n:'Metal',h:'金',p:58},{n:'Water',h:'水',p:0,f:1}];
+  var R=150;
+  el('circle',{cx:0,cy:0,r:R,class:'ln','stroke-dasharray':'1 5'},o);
+  el('circle',{cx:0,cy:0,r:R+40,class:'ln',opacity:'.35'},o);
+  for(var t=0;t<72;t++){var a=t/72*Math.PI*2;el('line',{x1:Math.cos(a)*(R+40),y1:Math.sin(a)*(R+40),x2:Math.cos(a)*(R+(t%6===0?50:44)),y2:Math.sin(a)*(R+(t%6===0?50:44)),class:'ln',opacity:'.5'},o)}
+  // controlling star (dim)
+  var pts=E.map(function(e,i){var a=-Math.PI/2+i*2*Math.PI/5;return[Math.cos(a)*R,Math.sin(a)*R]});
+  var star='';[0,2,4,1,3,0].forEach(function(k,j){star+=(j?'L':'M')+pts[k][0].toFixed(1)+' '+pts[k][1].toFixed(1)});
+  el('path',{d:star,class:'ln',opacity:'.22'},o);
+  // centre flame
+  el('use',{href:'#e-metal',x:-38,y:-38,width:76,height:76},o);
+  E.forEach(function(e,i){
+    var x=pts[i][0],y=pts[i][1];var r=14+Math.sqrt(e.p)*6.2;
+    el('circle',{cx:x,cy:y,r:r+8,fill:'#061113',stroke:'none'},o);
+    el('circle',{cx:x,cy:y,r:r,fill:e.p>20?'#c5d3cf':'#061113',stroke:'#c5d3cf','stroke-width':1.2},o);
+    if(e.f){el('circle',{cx:x,cy:y,r:r+6,class:'ln','stroke-dasharray':'1 3'},o);}
+    var tx=el('text',{x:x,y:y+7,'text-anchor':'middle','font-family':'Noto Serif SC, serif','font-weight':600,'font-size':r>30?22:16,fill:e.p>20?'#061113':'#eef4f1'},o);tx.textContent=e.h;
+    var ly=y+(y<-100?-r-14:r+22);
+    var lb=el('text',{x:x,y:ly,'text-anchor':'middle','font-family':'Jost, sans-serif','font-size':11,'letter-spacing':'3',fill:'#c5d3cf'},o);lb.textContent=e.n.toUpperCase()+'  '+e.p+'%';
+    if(e.f){var fv=el('text',{x:x,y:ly+(y<-100?-14:16),'text-anchor':'middle','font-family':'Cormorant Garamond, serif','font-style':'italic','font-size':15,fill:'#eef4f1'},o);fv.textContent='favourable';}
+  });
+
+  /* luck arc */
+  var s=document.getElementById('arc');
+  var L=[{a:3,y:'1990–2000',s:'庚',b:'戌',t:'The guarded jewel'},{a:13,y:'2000–10',s:'辛',b:'亥',t:'The first river'},{a:23,y:'2010–20',s:'壬',b:'子',t:'The great washing'},{a:33,y:'2020–30',s:'癸',b:'丑',t:'Becoming fully yourself',now:1},{a:43,y:'2030–40',s:'甲',b:'寅',t:'Wealth and the patron'},{a:53,y:'2040–50',s:'乙',b:'卯',t:'The field of your own'}];
+  var cx=500,cy=620,AR=430,A0=205*Math.PI/180,A1=335*Math.PI/180;
+  el('path',{d:'M'+(cx+Math.cos(A0-.12)*AR)+' '+(cy+Math.sin(A0-.12)*AR)+'A'+AR+' '+AR+' 0 0 1 '+(cx+Math.cos(A1+.12)*AR)+' '+(cy+Math.sin(A1+.12)*AR),class:'ln','stroke-dasharray':'1 6',opacity:'.6'},s);
+  L.forEach(function(l,i){
+    var ang=A0+i/(L.length-1)*(A1-A0);var x=cx+Math.cos(ang)*AR,y=cy+Math.sin(ang)*AR;
+    var r=l.now?50:42;
+    if(l.now){el('circle',{cx:x,cy:y,r:r+10,class:'ln','stroke-dasharray':'1 3'},s);}
+    el('circle',{cx:x,cy:y,r:r,fill:l.now?'url(#sunR)':'#0b1b1d',stroke:'#c5d3cf','stroke-width':1.2},s);
+    var g=el('text',{x:x,y:y+9,'text-anchor':'middle','font-family':'Noto Serif SC, serif','font-weight':900,'font-size':l.now?30:26,fill:l.now?'#ffffff':'#eef4f1'},s);g.textContent=l.s+l.b;
+    var oy=y-r-(l.now?40:26);
+    var ag=el('text',{x:x,y:oy,'text-anchor':'middle','font-family':'Cormorant Garamond, serif','font-size':l.now?34:28,fill:'#c5d3cf'},s);ag.textContent=l.a;
+    var yr=el('text',{x:x,y:y+r+(l.now?34:26),'text-anchor':'middle','font-family':'Jost, sans-serif','font-size':11,'letter-spacing':'2.5',fill:'#94a8a4'},s);yr.textContent=l.y;
+    var tt=el('text',{x:x,y:y+r+(l.now?54:46),'text-anchor':'middle','font-family':'Cormorant Garamond, serif','font-style':'italic','font-size':16,fill:l.now?'#eef4f1':'#e3e9e6'},s);tt.textContent=l.t;
+    if(l.now){var nw=el('text',{x:x,y:oy-30,'text-anchor':'middle','font-family':'Jost, sans-serif','font-size':11,'letter-spacing':'4',fill:'#eef4f1'},s);nw.textContent='NOW';}
+  });
+  el('text',{x:500,y:592,'text-anchor':'middle','font-family':'Jost, sans-serif','font-size':11,'letter-spacing':'4',fill:'#5d7672'},s).textContent='AGE · YEARS · CHARACTER OF THE DECADE';
+
+
+  /* natal wheel */
+  (function(){
+    var w=document.getElementById('wheel');if(!w)return;
+    var ASC=33.43,VS='\ufe0e';
+    function pt(L,r){var t=(180+(L-ASC))*Math.PI/180;return[Math.cos(t)*r,-Math.sin(t)*r]}
+    var gold='#c5d3cf';
+    [236,200,150].forEach(function(r,i){el('circle',{cx:0,cy:0,r:r,class:'ln',opacity:i==2?.5:1},w)});
+    el('circle',{cx:0,cy:0,r:246,class:'ln','stroke-dasharray':'1 4',opacity:.6},w);
+    var SG=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+    for(var k=0;k<12;k++){var a=pt(k*30,200),b=pt(k*30,236);el('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],class:'ln'},w);
+      var c=pt(k*30,150),d=pt(k*30,200);el('line',{x1:c[0],y1:c[1],x2:d[0],y2:d[1],class:'ln',opacity:.35},w);
+      var g=pt(k*30+15,218);var t=el('text',{x:g[0],y:g[1]+6,'text-anchor':'middle','font-size':17,fill:k==6?'#eef4f1':gold,'font-family':'DejaVu Sans, Segoe UI Symbol, Apple Symbols, serif'},w);t.textContent=SG[k]+VS;
+      var h=((k-1+12)%12)+1;var hp=pt(k*30+15,162);var ht=el('text',{x:hp[0],y:hp[1]+4,'text-anchor':'middle','font-size':10,fill:'#5d7672','font-family':'Jost, sans-serif'},w);ht.textContent=h;}
+    for(var dgr=0;dgr<360;dgr+=5){var a2=pt(dgr,200),b2=pt(dgr,dgr%10?204:208);el('line',{x1:a2[0],y1:a2[1],x2:b2[0],y2:b2[1],class:'ln',opacity:.6},w)}
+    // axes
+    var A=pt(ASC,250),D=pt(ASC+180,250);el('line',{x1:A[0],y1:A[1],x2:D[0],y2:D[1],class:'ln',opacity:.55},w);
+    var M=pt(287.37,250),I=pt(107.37,250);el('line',{x1:M[0],y1:M[1],x2:I[0],y2:I[1],class:'ln',opacity:.35,'stroke-dasharray':'2 4'},w);
+    var at=el('text',{x:A[0]+6,y:A[1]-6,'text-anchor':'start','font-size':10,'letter-spacing':2,fill:gold,'font-family':'Jost, sans-serif'},w);at.textContent='ASC';
+    var mt=pt(287.37,240);var mtt=el('text',{x:mt[0]+10,y:mt[1]+2,'text-anchor':'start','font-size':10,'letter-spacing':2,fill:gold,'font-family':'Jost, sans-serif'},w);mtt.textContent='MC';
+    var P=[['☉',186.30,1],['☽',270.50,1],['☿',211.48],['♀',196.47],['♂',174.35],['♃',27.09],['♄',255.90],['♅',263.06],['♆',275.27],['♇',218.59]];
+    P.sort(function(a,b){return a[1]-b[1]});
+    var last=-99;P.forEach(function(p){p.d=Math.max(p[1],last+8.5);last=p.d});
+    // aspects-ish: connect Sun to Saturn (square) and Sun-Neptune (sextile) faintly
+    P.forEach(function(p){
+      var tp=pt(p[1],150),tq=pt(p[1],145);el('circle',{cx:tp[0],cy:tp[1],r:2,fill:gold},w);
+      var lp=pt(p.d,124),l0=pt(p[1],148);el('line',{x1:l0[0],y1:l0[1],x2:lp[0],y2:lp[1],class:'ln',opacity:.4},w);
+      var gp=pt(p.d,112);var gt=el('text',{x:gp[0],y:gp[1]+7,'text-anchor':'middle','font-size':p[2]?21:18,fill:p[2]?'#eef4f1':gold,'font-family':'DejaVu Sans, Segoe UI Symbol, Apple Symbols, serif'},w);gt.textContent=p[0]+VS;
+    });
+    el('circle',{cx:0,cy:0,r:62,class:'ln','stroke-dasharray':'1 4'},w);
+    el('use',{href:'#e-metal',x:-34,y:-34,width:68,height:68},w);
+  })();
+  /* gold dust */
+  var c=document.getElementById('dust'),ctx=c.getContext('2d');
+  function dust(){
+    var d=Math.min(window.devicePixelRatio||1,2),W=window.innerWidth,H=window.innerHeight;
+    c.width=W*d;c.height=H*d;ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,W,H);
+    var seed=7;function r(){seed=(seed*9301+49297)%233280;return seed/233280}
+    var n=Math.round(W*H/1400);
+    for(var i=0;i<n;i++){var x=r()*W,y=r()*H,s=r();
+      ctx.fillStyle='rgba(197,211,207,'+(0.08+s*0.35)+')';ctx.beginPath();ctx.arc(x,y,s<.93?.5+s*.6:1.3,0,6.283);ctx.fill();}
+    for(var j=0;j<Math.round(W*H/90000);j++){var X=r()*W,Y=r()*H,S=2+r()*3;
+      ctx.fillStyle='rgba(238,244,241,.55)';ctx.beginPath();ctx.moveTo(X,Y-S*2);ctx.quadraticCurveTo(X,Y,X+S*2,Y);ctx.quadraticCurveTo(X,Y,X,Y+S*2);ctx.quadraticCurveTo(X,Y,X-S*2,Y);ctx.quadraticCurveTo(X,Y,X,Y-S*2);ctx.fill();}
+  }
+  dust();window.addEventListener('resize',dust);
+})();
+</script>
+</body>
+</html>
