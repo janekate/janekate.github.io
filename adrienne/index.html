@@ -318,6 +318,12 @@ main{overflow-x:clip}
 .deco{position:absolute;width:230px;height:115px;pointer-events:none;z-index:-1;opacity:.9;top:64px}
 .deco.l{left:max(-40px,calc(50% - 700px))}.deco.r{right:max(-40px,calc(50% - 700px));transform:scaleX(-1)}
 @media (max-width:1000px){.deco{display:none}}
+/* Decade Ahead: open layout, no card frames */
+#decade .tarot{background:none!important;border:0!important;box-shadow:none!important;border-radius:0}
+#decade .tarot::before,#decade .tarot::after,#decade .tarot .tab{display:none}
+#decade .tarot .foot{border-top:0;padding-top:6px}
+#decade .phases .tarot{padding-top:0}
+#decade .long .tarot{padding-top:8px}
 </style>
 </head>
 <body>
